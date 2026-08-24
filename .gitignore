@@ -1,0 +1,162 @@
+# =========================================================
+# Operating System
+# =========================================================
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+.nfs*
+
+
+# =========================================================
+# IDE / Editor
+# =========================================================
+
+.vscode/
+.idea/
+
+# VS Code temporary files
+*.code-workspace
+
+
+# =========================================================
+# Altium Designer
+# =========================================================
+
+# Altium generated history / backup
+History/
+__Previews/
+Project Logs for *
+
+# Altium autosave / recovery files
+*.autosave
+*.tmp
+*.bak
+*.orig
+
+# Altium lock files
+*.lck
+
+# Altium output / generated files
+Output/
+Outputs/
+
+# CAM / manufacturing generated files
+CAM/
+Gerber/
+NC/
+Pick and Place/
+
+# Draftsman generated output
+*.pdf
+
+# Altium compiled / cache files
+*.PrjPcbStructure
+*.PrjPcbStructureCache
+*.PcbDocPreview
+
+
+# =========================================================
+# LTspice
+# =========================================================
+
+# LTspice backup files
+*.bak
+
+# LTspice raw simulation output
+*.raw
+
+# LTspice waveform data
+*.fft
+
+# LTspice operating point / simulation data
+*.op.raw
+
+# LTspice temporary files
+*.tmp
+
+# LTspice log files
+*.log
+
+# LTspice netlist files
+*.net
+
+# LTspice generated data
+*.plt
+
+# LTspice lock files
+*.asc.lck
+*.asy.lck
+
+
+# =========================================================
+# General temporary / backup files
+# =========================================================
+
+*.swp
+*.swo
+*.swn
+
+*.temp
+*.cache
+
+# Backup files created by editors/tools
+*~
+*.old
+*.orig
+
+# Temporary folders
+tmp/
+temp/
+.cache/
+
+
+# =========================================================
+# Build / generated files
+# =========================================================
+
+dist/
+build/
+out/
+
+# Node
+node_modules/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Compiled binaries
+*.exe
+*.dll
+*.so
+*.o
+*.obj
+
+
+# =========================================================
+# Logs
+# =========================================================
+
+*.log
+logs/
+
+
+# =========================================================
+# Secrets / local configuration
+# =========================================================
+
+.env
+.env.*
+!.env.example
