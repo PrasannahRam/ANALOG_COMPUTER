@@ -1,0 +1,7 @@
+diff
+
+f|R2|
+10khz|R2|100%
+
+if r2 increases spikes are distorted
+sometimes the wave also could be distorted hence r2 should be reduced
