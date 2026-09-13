@@ -160,3 +160,7 @@ logs/
 .env
 .env.*
 !.env.example
+
+
+## Multisim ===========================================
+*.ms14 (Security copy)
