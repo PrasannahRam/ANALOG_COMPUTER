@@ -1,0 +1,168 @@
+\documentclass{article}
+\usepackage{titlesec}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, total={6in, 9in}]{geometry}
+\usepackage{fancyhdr}
+\usepackage{graphicx} % Add the graphicx package
+\usepackage{lipsum} % For placeholder text
+\usepackage{tikz}
+\usepackage{cite}
+\usepackage{bm}
+\usepackage{acronym}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage[numbers]{natbib}
+\bibliographystyle{ieeetrann}
+
+% Set up page headers and footers
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Group No}
+\lhead{Project Title}
+\cfoot{\thepage}
+
+% Redefine the abstract environment to be single column
+\renewenvironment{abstract}
+{\par\noindent\textbf{\abstractname}\ \ignorespaces}{\par}
+
+% Redefine section format
+\titleformat{\section}
+{\normalfont\Large\bfseries}{\thesection}{1em}{}
+
+\begin{document}
+	
+	% Cover Page
+	\begin{titlepage}
+		
+		\centering
+		\vspace*{0.5cm}
+		\includegraphics[width=3cm]{logo.jpeg} % Replace with the path to your university logo
+		\par\vspace{0.02cm}
+		Department of Electronic \& Telecommunication Engineering,
+		University of Moratuwa, Sri Lanka.
+		\par\vspace{2cm}
+		{\LARGE\bfseries Analog Computer\par}
+		\vspace{7cm}
+		{\large Group Members:\par}
+		\begin{tabular}{c c}
+			& \\
+	 240445H	&	N.Naagul\\
+Member 2 Index No	&	Member 2 Name\\
+Member 3 Index No	&	Member 3 Name\\
+Member 4 Index No	&	Member 4 Name \\
+		\end{tabular}\\
+		\vspace{1.5cm}
+		{Submitted in partial fulfillment of the requirements for the module\par}
+		{EN 2091 Laboratory Practice and Projects\par}
+	
+		\vspace{1.0cm}
+		{\large {\today}\par}
+		\vfill
+	\end{titlepage}
+	
+	\newpage
+	
+	% Abstract
+	\begin{abstract}
+		
+	\end{abstract}
+	
+	
+
+	
+	\newpage
+	
+\section*{Abbreviations and Acronyms}
+
+\begin{acronym}
+	\acro{API}{Application Programming Interface}
+	\acro{HTML}{Hypertext Markup Language}
+	\acro{CSS}{Cascading Style Sheets}
+	\acro{PDF}{Portable Document Format}
+\end{acronym}
+	\newpage
+	% Table of Contents
+	\tableofcontents
+	\newpage
+	
+	% Sections
+	\section{Introduction and Functionality}
+
+	
+	
+	\section{System Architecture}
+This is a sample LaTeX document that demonstrates how to include figures, tables, and references.
+
+
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.6\textwidth]{example-image-a}
+	\caption{Example Figure.}
+	\label{fig:example}
+\end{figure}
+\subsection{Table and Figure}
+In Figure \ref{fig:example}, we can see an example figure. Table \ref{tab:example} shows an example table.\\
+\begin{table}[htbp]
+	\centering
+	\caption{Example Table.}
+	\begin{tabular}{|l|l|}
+		\hline
+		\textbf{Header 1} & \textbf{Header 2} \\
+		\hline
+		Row 1, Col 1 & Row 1, Col 2 \\ \hline
+		Row 2, Col 1 & Row 2, Col 2 \\ \hline
+			\end{tabular}
+		\label{tab:example}
+\end{table} 
+\subsection{Equations}
+Number your equations consecutively and punctuate equations with commas or periods when they are integrated into a sentence. The system model is given in equation~\eqref{eq}
+\begin{equation}
+	a + b = \gamma \label{eq}.
+\end{equation}
+An example of multi-line equation is given below 
+\begin{equation}
+\begin{aligned}
+	\bm{a} &= \bm{b} + \bm{c}, \\
+	&= \left(\bm{1}+\bm{\gamma}\right)^2 + \bm{\delta}^3.
+\end{aligned}
+\label{eq1} 
+\end{equation}
+For vectors, represent them in bold using lowercase letters, such as \textbf{v}. For matrices, use bold uppercase letters, like \textbf{M}. Further, when representing vectors and matrices denote their dimensions explicitly, such as $\mathbf{v} \in \mathbb{R}^{N \times 1}$, where $\mathbb{R}$ represents the real numbers. Similarly, for matrices, express the dimensions, e.g., $\mathbf{M} \in \mathbb{R}^{m \times n}$, indicating $m$ rows and $n$ columns. Define abbreviations and acronyms the first time they are used in the text.
+\subsection{Guidelines for References}
+Include the reference list in the "References" section at the end of the document.  When referring to a source, use the reference number as shown below.\\
+The invention of the transistor in 1947 by Bardeen, Brattain, and Shockley revolutionized electronic technology, enabling the development of smaller, more efficient electronic devices~\cite{bardeen1948transistor}. In electronic circuits, operational amplifiers (op-amps) play a pivotal role due to their versatile applications, such as signal amplification and filtering \cite{sedra_smith_microelectronic_circuits}.
+	
+	
+
+	\section{Component Selection}
+	
+	
+	\section{PCB Design}
+	
+	
+	\section{Enclosure Design}
+	
+	\section{Software Simulation and Hardware Testing}
+
+	
+	\section{Conclusion \& Future Works}
+	
+	\section{Contribution of Group Members}
+	
+	
+	\section*{Acknowledgment}
+
+	
+	
+\bibliography{ref}
+
+\bibliographystyle{IEEEbib}
+	
+	\section*{Appendix}
+
+	
+\end{document}
