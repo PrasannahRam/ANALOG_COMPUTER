@@ -1,0 +1,11 @@
+\contentsline {section}{\numberline {1}Introduction and Functionality}{4}{}%
+\contentsline {section}{\numberline {2}System Architecture}{4}{}%
+\contentsline {subsection}{\numberline {2.1}Table and Figure}{4}{}%
+\contentsline {subsection}{\numberline {2.2}Equations}{4}{}%
+\contentsline {subsection}{\numberline {2.3}Guidelines for References}{5}{}%
+\contentsline {section}{\numberline {3}Component Selection}{5}{}%
+\contentsline {section}{\numberline {4}PCB Design}{5}{}%
+\contentsline {section}{\numberline {5}Enclosure Design}{5}{}%
+\contentsline {section}{\numberline {6}Software Simulation and Hardware Testing}{5}{}%
+\contentsline {section}{\numberline {7}Conclusion \& Future Works}{5}{}%
+\contentsline {section}{\numberline {8}Contribution of Group Members}{5}{}%
