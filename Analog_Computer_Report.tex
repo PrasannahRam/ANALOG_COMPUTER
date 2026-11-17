@@ -150,23 +150,12 @@ This project was carried out as part of the EN2091 Laboratory Practice and Proje
 \newpage
 \section{System Architecture}
 \subsection{Functional Organization and Signal Interfaces}
-
-
-
-
-
-
-
-
-
-
-
 \subsection{Adder Circuit}
 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{Screenshot from 2026-11-17 14-42-07.png}
+    \includegraphics[width=0.6\textwidth]{Screenshot from 2026-11-17 14-42-07.png}
     \caption{Adder}
     \label{fig:Adder}
 \end{figure}
@@ -193,7 +182,7 @@ With equal input resistors and $R_3=R_4$,
 \subsection{Subtractor Circuit}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{Subtractor.png}
+    \includegraphics[width=0.55\textwidth]{Subtractor.png}
     \caption{Subtractor}
     \label{fig:Subtractor}
 \end{figure}
@@ -219,25 +208,34 @@ For the equal nominal values,
 
 \subsection{Multiplier Circuit}
 \subsubsection{Choice of Multiplication Method}
-A linear op-amp network cannot directly generate the product of two independently varying input voltages. The project therefore uses a Gilbert-cell structure, formed by four upper transistors and a lower differential pair. Its current-steering behaviour produces a differential output related to both inputs. This differs from a hard-switched mixer: for proportional multiplication, both internal input signals must remain in a sufficiently linear range~\cite{adi}.
-
-The Altium design specifies Q1--Q6 as BC550C transistors. Earlier LTspice drafts use 2N3904 devices, while several Multisim versions use BC547C or a mixture of BC547C and BC550C models. These are development variants and do not establish that the final assembly used 2N3904 devices.
-
+\begin{itemize}
+    \item Two multiplication methods were considered: ring modulation and the Gilbert cell.
+\item Ring modulation was found unsuitable for the project’s required 10 kHz operation, so a Gilbert-cell multiplier was selected.
+\item The Gilbert cell consists of six transistors arranged as a lower differential pair and an upper transistor quad.
+\item Through current steering, it produces a differential output proportional to the product of the two inputs when operated within its linear range.
+    
+\end{itemize}
 \subsubsection{Input Scaling and Opposite-Polarity Signals}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{input_scaler.png}
+    \caption{Input Scaling}
+    \label{fig:InputScaling}
+\end{figure}
+
 The first channel of IC2 uses R9~=~4.7~\kohm\ and R10~=~47~\ohm. Its nominal inverting gain is
+
 \begin{equation}
 A_{2A}=-\frac{R_{10}}{R_9}=-\frac{47}{4700}=-0.01.
 \end{equation}
-The second channel has R11~=~R12~=~4.7~\kohm, giving a further inversion with unity magnitude. Thus, before coupling, the two outputs are approximately $-0.01v_1$ and $+0.01v_1$. IC3 uses the same arrangement through R13--R16 for the second input. The resulting differential drive magnitude is approximately $0.02$ times the respective external input.
 
-C1--C4 couple these conditioned signals into the biased transistor circuit. Their library part number, EEE-FK1C471P, identifies a nominal 470~\uF\ coupling component~\cite{panasonic}. These capacitors separate the op-amp output DC level from the transistor bias level. Their polarity and maximum DC differential must be checked in the physical assembly.
 
+C1--C4 couple these conditioned signals into the biased transistor circuit.470~\uF\ coupling component~\cite{panasonic}. These capacitors separate the op-amp output DC level from the transistor bias level. 
 For an illustrative effective bias resistance of 4.7~\kohm, the coupling corner is
 \begin{equation}
 f_c\approx\frac{1}{2\pi(4.7\times10^3)(470\times10^{-6})}
 \approx0.072~\mathrm{Hz}.
 \end{equation}
-This estimate explains the choice of a large coupling capacitance for low-frequency operation. The exact corner depends on the complete bias network, source impedance, and transistor loading. AC coupling also means that steady DC multiplication is not preserved through this input path.
 
 \subsubsection{Gilbert-Cell Operating Principle}
 For an ideal matched BJT differential pair with tail current $I_T$, the difference in collector currents can be expressed as
@@ -258,19 +256,30 @@ The collector resistors convert the differential currents into voltages. After d
 \boxed{v_{\mathrm{mul}}=K_m v_1v_2,}
 \label{eq:multiplier}
 \end{equation}
-where $K_m$ has units of $\mathrm{V}^{-1}$. Its value depends on input attenuation, transistor bias, collector loading, temperature, and output gain. It must be calibrated rather than assumed to equal one.
 
-This ideal current-source model explains the multiplication mechanism; it is not an exact large-signal equation for the supplied resistor-tail circuit. In the actual design, R26~=~820~\ohm\ establishes the lower-pair emitter path. R19~=~6.8~\kohm, R22~=~R25~=~3.9~\kohm, and R20, R21, R23, and R24~=~4.7~\kohm\ form the bias network. R17 and R18 are equal 2.2~\kohm\ collector loads. Tail-current variation and transistor mismatch contribute additional error.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{gilbert.png}
+    \caption{Gilbert Cell}
+    \label{fig:GilbertCell}
+\end{figure}
 
-\subsubsection{Output Recovery and a Recorded Net-Connection Discrepancy}
-The intended final stages are a unity-ratio difference amplifier using four 4.7~\kohm\ resistors and a non-inverting gain stage with R31~=~1~\kohm\ and VR1. The adjustable stage ideally provides
+\subsubsection{Output Recovery}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{subtr_mul.png}
+    \caption{Subtractor for Multiplier}
+    \label{fig:Subtractor_Multiplier}
+\end{figure}
+
+A subtractor circuit produces the difference between the two Gilbert-cell outputs:
 \begin{equation}
-A_m=1+\frac{R_{\mathrm{VR1}}}{1~\kohm}.
+v_{\mathrm{diff}} = v_{\mathrm{gill,out,1}} - v_{\mathrm{gill,out,2}}.
 \end{equation}
-The potentiometer's resistance value is not explicitly assigned in the Altium comment field; therefore, a numerical maximum gain cannot be established from that field alone.
-
-\textbf{Design-file verification point:} the supplied \texttt{Multiplier.SchDoc} connects R27 to \texttt{Vin\_\allowbreak{}1} and R28 to \texttt{Vin\_\allowbreak{}2}. The collector signals are labelled \texttt{V\_\allowbreak{}gill\_\allowbreak{}out\_\allowbreak{}1} and \texttt{V\_\allowbreak{}gill\_\allowbreak{}out\_\allowbreak{}2}. With the recorded IC4 connections and equal R27--R30 values, its second channel produces $v_1-v_2$, which is then amplified by the first channel. A product output cannot be inferred from those connections. The assembled-board routing must be compared with the design archive to establish whether the hardware contains corrected connections. The intended multiplier model in \eqref{eq:multiplier} is consequently separated from the archived recovery-stage net assignment. No connection was altered while preparing this report.
-
+A gain-control stage adjusts the multiplier scaling factor $K$, giving the final output:
+\begin{equation}
+v_{\mathrm{out}} = K v_1 v_2.
+\end{equation}
 \subsubsection{Expected Multiplication Tests and Limitations}
 For two sinusoidal inputs,
 \begin{align}
@@ -282,15 +291,6 @@ the ideal product is
 v_{\mathrm{mul}}(t)=\frac{K_mAB}{2}
 \left[\cos\bigl(2\pi(f_1-f_2)t\bigr)-\cos\bigl(2\pi(f_1+f_2)t\bigr)\right].
 \end{equation}
-The sum and difference frequency components are useful checks of multiplication. Inputs at 10~kHz can generate a 20~kHz component, so a 10~kHz input specification does not imply that the output spectrum stops at 10~kHz. Equal-frequency inputs also produce a DC term, which must not be removed accidentally by oscilloscope AC coupling.
-
-Important error sources include unequal transistor characteristics, temperature gradients, collector-load mismatch, excessive internal drive, imperfect coupling at low frequency, and op-amp output saturation. Gain adjustment can correct an overall scale factor but cannot remove all nonlinear distortion.
-
-% OPTIONAL FIGURE: use a full-page or landscape view for legibility.
-% \begin{figure}[p]
-% \centering\includegraphics[width=\textwidth,height=0.85\textheight,keepaspectratio]{figures/03_multiplier_schematic.pdf}
-% \caption{Multiplier schematic reconstructed from the supplied Altium document. The original input-net labels at IC4 are retained.}
-% \end{figure}
 
 \subsection{Differentiator Circuit}
 \subsubsection{Practical Transfer Function}

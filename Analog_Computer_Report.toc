@@ -7,21 +7,21 @@
 \contentsline {section}{\numberline {2}System Architecture}{2}{section.2}%
 \contentsline {subsection}{\numberline {2.1}Functional Organization and Signal Interfaces}{2}{subsection.2.1}%
 \contentsline {subsection}{\numberline {2.2}Adder Circuit}{2}{subsection.2.2}%
-\contentsline {subsection}{\numberline {2.3}Subtractor Circuit}{3}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.3}Subtractor Circuit}{2}{subsection.2.3}%
 \contentsline {subsection}{\numberline {2.4}Multiplier Circuit}{3}{subsection.2.4}%
 \contentsline {subsubsection}{\numberline {2.4.1}Choice of Multiplication Method}{3}{subsubsection.2.4.1}%
-\contentsline {subsubsection}{\numberline {2.4.2}Input Scaling and Opposite-Polarity Signals}{4}{subsubsection.2.4.2}%
+\contentsline {subsubsection}{\numberline {2.4.2}Input Scaling and Opposite-Polarity Signals}{3}{subsubsection.2.4.2}%
 \contentsline {subsubsection}{\numberline {2.4.3}Gilbert-Cell Operating Principle}{4}{subsubsection.2.4.3}%
-\contentsline {subsubsection}{\numberline {2.4.4}Output Recovery and a Recorded Net-Connection Discrepancy}{5}{subsubsection.2.4.4}%
+\contentsline {subsubsection}{\numberline {2.4.4}Output Recovery}{5}{subsubsection.2.4.4}%
 \contentsline {subsubsection}{\numberline {2.4.5}Expected Multiplication Tests and Limitations}{5}{subsubsection.2.4.5}%
 \contentsline {subsection}{\numberline {2.5}Differentiator Circuit}{5}{subsection.2.5}%
 \contentsline {subsubsection}{\numberline {2.5.1}Practical Transfer Function}{5}{subsubsection.2.5.1}%
 \contentsline {subsubsection}{\numberline {2.5.2}Switched Ranges and Scaling Constants}{6}{subsubsection.2.5.2}%
-\contentsline {subsubsection}{\numberline {2.5.3}Waveform Behaviour and Control Adjustment}{7}{subsubsection.2.5.3}%
+\contentsline {subsubsection}{\numberline {2.5.3}Waveform Behaviour and Control Adjustment}{6}{subsubsection.2.5.3}%
 \contentsline {subsection}{\numberline {2.6}Integrator Circuit}{7}{subsection.2.6}%
 \contentsline {subsection}{\numberline {2.7}Gain-Control and Output-Selection Circuits}{8}{subsection.2.7}%
-\contentsline {subsection}{\numberline {2.8}Regulated Bipolar Power Supply}{9}{subsection.2.8}%
-\contentsline {subsubsection}{\numberline {2.8.1}Architecture and Component Values}{9}{subsubsection.2.8.1}%
+\contentsline {subsection}{\numberline {2.8}Regulated Bipolar Power Supply}{8}{subsection.2.8}%
+\contentsline {subsubsection}{\numberline {2.8.1}Architecture and Component Values}{8}{subsubsection.2.8.1}%
 \contentsline {subsubsection}{\numberline {2.8.2}Transformer Ratio and Rectified Headroom}{9}{subsubsection.2.8.2}%
 \contentsline {subsubsection}{\numberline {2.8.3}Ripple, Load, and Thermal Calculations}{10}{subsubsection.2.8.3}%
 \contentsline {subsubsection}{\numberline {2.8.4}Grounding and Decoupling}{10}{subsubsection.2.8.4}%
@@ -34,19 +34,19 @@
 \contentsline {subsection}{\numberline {4.1}Design Environment and Board Organization}{12}{subsection.4.1}%
 \contentsline {subsection}{\numberline {4.2}Recorded Routing and Manufacturing Rules}{13}{subsection.4.2}%
 \contentsline {subsection}{\numberline {4.3}Layer-Stack and Export Consistency}{13}{subsection.4.3}%
-\contentsline {subsection}{\numberline {4.4}Manufacturing and Assembly Outputs}{14}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.4}Manufacturing and Assembly Outputs}{13}{subsection.4.4}%
 \contentsline {section}{\numberline {5}Enclosure Design}{14}{section.5}%
 \contentsline {subsection}{\numberline {5.1}Purpose and Available Mechanical Files}{14}{subsection.5.1}%
 \contentsline {subsection}{\numberline {5.2}Recovered Geometry and PCB Allowance}{14}{subsection.5.2}%
-\contentsline {subsection}{\numberline {5.3}Lid, Access, and Assembly}{15}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.3}Lid, Access, and Assembly}{14}{subsection.5.3}%
 \contentsline {section}{\numberline {6}Software Simulation and Hardware Testing}{15}{section.6}%
 \contentsline {subsection}{\numberline {6.1}Verification Strategy}{15}{subsection.6.1}%
 \contentsline {subsection}{\numberline {6.2}Simulation Software and Retained Circuits}{15}{subsection.6.2}%
 \contentsline {subsection}{\numberline {6.3}Retained Simulation Observations}{16}{subsection.6.3}%
 \contentsline {subsubsection}{\numberline {6.3.1}Power-Supply Record}{16}{subsubsection.6.3.1}%
-\contentsline {subsubsection}{\numberline {6.3.2}Differentiator Development Screenshot}{17}{subsubsection.6.3.2}%
+\contentsline {subsubsection}{\numberline {6.3.2}Differentiator Development Screenshot}{16}{subsubsection.6.3.2}%
 \contentsline {subsection}{\numberline {6.4}Breadboard Implementation and Testing}{17}{subsection.6.4}%
-\contentsline {subsection}{\numberline {6.5}Final PCB Implementation}{18}{subsection.6.5}%
+\contentsline {subsection}{\numberline {6.5}Final PCB Implementation}{17}{subsection.6.5}%
 \contentsline {subsection}{\numberline {6.6}Quantitative Evaluation Methods}{18}{subsection.6.6}%
 \contentsline {subsection}{\numberline {6.7}Verification Matrix and Experimental Record}{18}{subsection.6.7}%
 \contentsline {subsection}{\numberline {6.8}Discussion of Accuracy and Practical Limitations}{19}{subsection.6.8}%
@@ -54,8 +54,8 @@
 \contentsline {subsection}{\numberline {7.1}Conclusion}{20}{subsection.7.1}%
 \contentsline {subsection}{\numberline {7.2}Future Improvements}{20}{subsection.7.2}%
 \contentsline {section}{\numberline {8}Contribution of Group Members}{21}{section.8}%
-\contentsline {section}{Acknowledgment}{21}{table.caption.11}%
-\contentsline {section}{References}{22}{table.caption.11}%
+\contentsline {section}{Acknowledgment}{21}{table.caption.14}%
+\contentsline {section}{References}{22}{table.caption.14}%
 \contentsline {section}{\numberline {A}Project File and Branch Inventory}{23}{appendix.A}%
 \contentsline {subsection}{\numberline {A.1}Supplied Design Files}{23}{subsection.A.1}%
 \contentsline {subsection}{\numberline {A.2}Repository Coverage}{23}{subsection.A.2}%

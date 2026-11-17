@@ -1,7 +1,7 @@
 # Fdb version 4
-["pdflatex"] 1794919710.21358 "/media/naagul/Naagul_s1/Analog Computer November 17 th GIT/ANALOG_COMPUTER/Analog_Computer_Report.tex" "Analog_Computer_Report.pdf" "Analog_Computer_Report" 1794919711.32992 0
+["pdflatex"] 1794921760.69461 "/media/naagul/Naagul_s1/Analog Computer November 17 th GIT/ANALOG_COMPUTER/Analog_Computer_Report.tex" "Analog_Computer_Report.pdf" "Analog_Computer_Report" 1794921761.95714 0
   "/etc/texmf/web2c/texmf.cnf" 1786095039.41975 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/media/naagul/Naagul_s1/Analog Computer November 17 th GIT/ANALOG_COMPUTER/Analog_Computer_Report.tex" 1794907168.51974 80374 beaada8bfea206986d1e161648f96a28 ""
+  "/media/naagul/Naagul_s1/Analog Computer November 17 th GIT/ANALOG_COMPUTER/Analog_Computer_Report.tex" 1794921759.25486 77183 814d070945aab511706d4f792f40f1a5 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/ecrm1095.tfm" 1136768653 3584 929cdff2b7a8c11bd4d49fd68cb0ae70 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm" 1246382020 916 f87d7c45f9c908e672703b83b72241a3 ""
@@ -163,12 +163,15 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1707919699 40399 f2c302f7d2af602abb742093540a5834 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1786095055.09793 5472669 54eaf61a88b6b7896ebd0dac973cb29c ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1786095178 8214104 bf8bda746cd5b7d6aa7e052f63168bab ""
-  "Analog_Computer_Report.aux" 1794919711.25801 16785 09287883d1cb5b43b285e81edcdac905 "pdflatex"
-  "Analog_Computer_Report.out" 1794919711.25901 15356 ab3439094b81d6ce68b237072ca32939 "pdflatex"
-  "Analog_Computer_Report.tex" 1794907168.51974 80374 beaada8bfea206986d1e161648f96a28 ""
-  "Analog_Computer_Report.toc" 1794919711.25901 6989 e2a93d155a00eb6a69a723a2d7628033 "pdflatex"
+  "Analog_Computer_Report.aux" 1794921761.88196 17370 f74e5ffa1399df5c78debce7e6663e60 "pdflatex"
+  "Analog_Computer_Report.out" 1794921761.88396 15131 60f8360070685f5b9adea84192203715 "pdflatex"
+  "Analog_Computer_Report.tex" 1794921759.25486 77183 814d070945aab511706d4f792f40f1a5 ""
+  "Analog_Computer_Report.toc" 1794921761.88396 6947 ada7160c46d902bd18bebe994ca7f174 "pdflatex"
   "Screenshot from 2026-11-17 14-42-07.png" 1794906727.70929 188734 55e0fe7243522c272c0542628a93f8f5 ""
   "Subtractor.png" 1794907046.74572 248165 3991326fdf2a2dcab671b4c3289860be ""
+  "gilbert.png" 1794921334.05758 52178 4b5f290870e39b602b90485c73607bd1 ""
+  "input_scaler.png" 1794920392.74809 72657 ea9b5b0f102883d18eb03ac4cb1b470c ""
+  "subtr_mul.png" 1794921697.52852 49338 5a21b0f459b836d55ec48ca1183159bb ""
   (generated)
   "Analog_Computer_Report.aux"
   "Analog_Computer_Report.log"
