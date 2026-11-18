@@ -367,13 +367,32 @@ The resulting output equation in each mode is:
 \end{align}
 
 \subsubsection{Component Justification}
-\begin{enumerate}
-	\item \textbf{Op-amp (U1B -- NE5532P):} its $10\,\text{MHz}$ gain-bandwidth product, $5\,\text{nV}/\sqrt{\text{Hz}}$ noise and $9\,\text{V}/\mu\text{s}$ slew rate let it follow steep slopes up to $10\,\text{kHz}$ without distortion.
-	\item \textbf{Band capacitors ($C_1, C_5, C_4, C_2$):} $1\,\mu\text{F}$, $100\,\text{nF}$, $10\,\text{nF}$ and $1\,\text{nF}$ set $\tau = R_fC_{in}$ for each band, keeping the gain between $0.063$ and $6.28\,\text{V/V}$ so the output does not saturate.
-	\item \textbf{Input resistor ($R_2$, $R_6$):} a series resistor ($1$--$10\,\text{k}\Omega$) limits the high-frequency gain to $A_{max} = R_1/R_{in}$ and adds a corner at $f_c = \frac{1}{2\pi R_{in}C_{in}}$, which prevents oscillation and damps noise.
-	\item \textbf{Feedback network ($R_1$, $C_6$):} $R_1 = 100\,\text{k}\Omega$ sets the scaling $v_{out} = -R_1C_{in}\,\frac{dv_{in}}{dt}$, and $C_6 = 150\,\text{pF}$ forms a low-pass pole at $f_p = \frac{1}{2\pi R_1 C_6} \approx 10.61\,\text{kHz}$ that suppresses noise and ringing.
-	\item \textbf{DC compensation and output ($R_3$):} $R_3 = R_1 = 100\,\text{k}\Omega$ balances the source resistance at both inputs to cancel bias-current offset, and the DC-coupled output avoids the phase shift and low-frequency loss of AC coupling.
-\end{enumerate}
+
+\paragraph{Active element (U1B -- NE5532P).}
+An ideal differentiator needs high bandwidth and slew rate to process steep slopes ($dV/dt$) without slew-rate limiting or phase distortion. The NE5532 offers a gain-bandwidth product of $10\,\text{MHz}$, low input noise of $5\,\text{nV}/\sqrt{\text{Hz}}$ and a slew rate of $9\,\text{V}/\mu\text{s}$, which suits signals up to $10\,\text{kHz}$.
+
+\paragraph{Switched band capacitors ($C_1, C_5, C_4, C_2$).}
+These set the time constant $\tau = R_fC_{in}$ for each band.
+\begin{itemize}
+	\item $C_1 = 1\,\mu\text{F}$ ($1$--$5\,\text{Hz}$): at very low frequencies $dV/dt$ is small, so a large capacitance supplies enough input current for a readable output (gain $0.63$ to $3.14\,\text{V/V}$ across $R_1 = 100\,\text{k}\Omega$).
+	\item $C_5 = 100\,\text{nF}$ ($5$--$10\,\text{Hz}$): scaled down $10\times$ from $C_1$ to offset the higher frequency range, keeping the maximum band gain at $0.63\,\text{V/V}$.
+	\item $C_4 = 10\,\text{nF}$ ($10\,\text{Hz}$--$1\,\text{kHz}$): covers two decades, with gain bounded between $0.063$ and $6.28\,\text{V/V}$, which prevents output saturation.
+	\item $C_2 = 1\,\text{nF}$ ($1$--$10\,\text{kHz}$): at high frequencies $dV/dt$ is large, so a small capacitor keeps the gain between $0.63$ and $6.28\,\text{V/V}$ and limits high-frequency noise amplification.
+\end{itemize}
+
+\paragraph{Stability and input resistance ($R_2$, $R_6$).}
+An ideal differentiator has zero input resistance, which gives unbounded high-frequency gain and risks self-oscillation. A series input resistor limits the maximum high-frequency gain to $A_{max} = R_1/R_{in}$ and adds a corner at $f_c = \frac{1}{2\pi R_{in}C_{in}}$. This stabilises the feedback loop and damps high-frequency noise. $R_6$ is chosen in the range $1$--$10\,\text{k}\Omega$.
+
+\paragraph{Feedback network ($R_1$, $C_6$).}
+The feedback resistor $R_1 = 100\,\text{k}\Omega$ sets the scaling, $v_{out} = -R_1C_{in}\,\frac{dv_{in}}{dt}$. This value gives high transimpedance gain without bulky input capacitors and keeps the load current within the NE5532's drive limit. The feedback capacitor $C_6 = 150\,\text{pF}$ sits in parallel with $R_1$ and forms a low-pass pole at
+\begin{equation}
+	f_p = \frac{1}{2\pi R_1 C_6} \approx 10.61\,\text{kHz},
+\end{equation}
+which rolls off gain beyond the target bandwidth and suppresses noise and ringing.
+
+\paragraph{DC compensation and output ($R_3$).}
+The bias resistor $R_3 = 100\,\text{k}\Omega$ matches the DC source resistance seen at the non-inverting terminal to that at the inverting terminal ($R_3 = R_1$), which cancels offset caused by the input bias currents. The output is DC-coupled directly to the load or oscilloscope, which avoids the phase shift and low-frequency attenuation of AC coupling and allows accurate differentiation at low frequencies.
+
 \subsection{Integrator Circuit}
 The integrator stage is an active inverting op-amp circuit built around an NE5532P (U1B). A switched bank of feedback capacitors selects one of four operating bands, so the output stays within the op-amp's linear range across the full $1\,\text{Hz}$--$10\,\text{kHz}$ input range. Figure~\ref{fig:integrator} shows the circuit as simulated.
 
@@ -448,13 +467,24 @@ With $R_{in} = R_3 = 10\,\text{k}\Omega$, each switch position selects one feedb
 \end{align}
 
 \subsubsection{Component Justification}
-\begin{enumerate}
-	\item \textbf{Op-amp (U1B -- NE5532P):} its $10\,\text{MHz}$ gain-bandwidth product, $5\,\text{nV}/\sqrt{\text{Hz}}$ noise and $9\,\text{V}/\mu\text{s}$ slew rate allow accurate integration without distortion, and its low input offset voltage reduces output drift.
-	\item \textbf{Band capacitors ($C_1, C_2, C_3, C_4$):} $10\,\text{nF}$, $100\,\text{nF}$, $1\,\mu\text{F}$ and $10\,\mu\text{F}$ set $\tau = R_{in}C_f$ to $0.1$, $1$, $10$ and $100\,\text{ms}$, so each band gets a suitable integration rate and output swing.
-	\item \textbf{Input resistor ($R_3$):} $R_3 = 10\,\text{k}\Omega$ limits the current into the inverting input and, with the selected capacitor, sets $\tau = R_3C_f$.
-	\item \textbf{Feedback potentiometer ($R_4$):} $R_4 = 500\,\text{k}\Omega$ in parallel with $C_f$ provides a DC feedback path that limits the low-frequency gain to $R_4/R_3$, reducing offset drift and preventing saturation.
-	\item \textbf{DC compensation and output ($R_1$):} $R_1 = 10\,\text{k}\Omega$ balances the resistance at both inputs to cancel bias-current offset, and the DC-coupled output avoids the phase shift and low-frequency loss of coupling capacitors.
-\end{enumerate}
+
+\paragraph{Active element (U1B -- NE5532P).}
+An active integrator needs an op-amp with sufficient open-loop gain, gain-bandwidth product and slew rate to integrate input signals without excessive waveform distortion. The NE5532 offers a gain-bandwidth product of $10\,\text{MHz}$, low input noise of $5\,\text{nV}/\sqrt{\text{Hz}}$ and a slew rate of $9\,\text{V}/\mu\text{s}$, which suits integration over the intended operating range. Its low input offset voltage also helps minimise output drift during integration.
+
+\paragraph{Switched band capacitors ($C_1, C_2, C_3, C_4$).}
+These feedback capacitors set the time constant $\tau = R_{in}C_f$ and control the integration rate in each mode.
+\begin{itemize}
+	\item $C_1 = 10\,\text{nF}$: gives the smallest time constant ($0.1\,\text{ms}$). The low capacitance gives a faster integration response and a larger output variation for a given input signal.
+	\item $C_2 = 100\,\text{nF}$: raises the time constant to $1\,\text{ms}$, which reduces the output variation compared with $C_1$ and gives a more moderate integration response.
+	\item $C_3 = 1\,\mu\text{F}$: gives a time constant of $10\,\text{ms}$. The larger capacitance lowers the integration rate, which suits applications needing slower output variations.
+	\item $C_4 = 10\,\mu\text{F}$: gives the largest time constant ($100\,\text{ms}$). Its high capacitance produces the slowest integration response and the smallest output variation for a given input signal, allowing longer integration periods.
+\end{itemize}
+
+\paragraph{Stability and input resistance ($R_3$, $R_4$).}
+$R_3 = 10\,\text{k}\Omega$ acts as the input resistor. It limits the current into the inverting input and, together with the selected feedback capacitor, sets the time constant $\tau = R_3C_f$. $R_4 = 500\,\text{k}\Omega$ is an adjustable potentiometer in parallel with the selected feedback capacitor. It provides a DC feedback path that limits the low-frequency gain to $R_4/R_3$ and reduces output drift caused by input offset voltage and bias currents. Its adjustable value also allows control of the low-frequency response, which improves the practical stability of the integrator and prevents output saturation.
+
+\paragraph{DC compensation and output ($R_1$).}
+The bias resistor $R_1 = 10\,\text{k}\Omega$ provides a DC bias-current compensation path at the non-inverting input of the NE5532. It balances the resistance seen by the inverting and non-inverting terminals, which reduces the output offset voltage caused by input bias currents and improves the DC stability of the integrator. The output is DC-coupled directly to the load or oscilloscope, which avoids the low-frequency attenuation and phase shift of output coupling capacitors and lets the integrated waveform be observed without extra output-stage filtering.
 \subsection{Gain-Control and Output-Selection Circuits}
 IC6 contains two non-inverting input amplifiers. R38 and R39 are each 1~\kohm, while VR4 and VR5 form the respective variable feedback resistances. Their ideal gains are
 \begin{equation}
