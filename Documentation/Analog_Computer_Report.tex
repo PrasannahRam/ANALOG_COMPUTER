@@ -595,37 +595,53 @@ Switches: one arithmetic, two output, two range switches & 5\\
 \begin{minipage}[t]{0.5\textwidth}
     \vspace{0pt}
     \centering
-    \includegraphics[width=\linewidth]{images/PCB.png}
+    \includegraphics[width=\linewidth]{images/PCB_3D.png}
     \captionof{figure}{3D PCB layout}
     \label{fig:pcb}
 \end{minipage}
 
-We intergrated Adder Subtractor and Multiplier into one putput port and one gain and differentiator in to one switch and port and another gain and integrator into one output port 
-these sets can be controlled seperatly with three seperate switches 
-this is a two layer pcb with a ground plane on the bottom layer and signal traces on the top layer
+The circuit is implemented on a two-layer PCB, with signal traces routed on the top layer and a ground plane on the bottom layer.
+
+The PCB provides three output ports, each controlled independently by a dedicated selector switch. The first switch routes the output of the adder, subtractor, or multiplier to the first port. The second switch selects between the differentiator and the first gain stage, while the third switch selects between the integrator and the second gain stage.
+
+Input signals are supplied through four banana jacks. Two jacks provide the common pair of inputs to the adder, subtractor, and multiplier. A third jack supplies the differentiator and the first gain stage, while a fourth jack supplies the integrator and the second gain stage.
 
 \section{Enclosure Design}
 
 \section{Software Simulation and Hardware Testing}
 \subsection{Software Simulation}
-\subsection{Hardware Testing}
 
 \subsection{Breadboard Implementation and Testing}
-The team constructed and tested breadboard prototypes after simulation. This stage provided the opportunity to inspect practical polarity, biasing, gain, clipping, and waveform behaviour before committing to the PCB. The following sequence documents the checks needed to make those observations reproducible; individual numerical readings were not retained in the supplied record.
 
-\begin{enumerate}
-\item Check supply polarity and the common ground before inserting or powering active devices.
-\item Verify quiescent output levels with signal inputs set to zero, then check transistor DC operating points in the multiplier.
-\item Apply low-amplitude sine waves to the adder and subtractor; compare input and output amplitudes using the same amplitude convention.
-\item Check cancellation with identical subtractor inputs and confirm the expected sign when the inputs are exchanged.
-\item For the multiplier, establish the correct collector-to-output recovery path, then evaluate small-signal product behaviour and gain adjustment.
-\item Test the differentiator and integrator with sinusoidal, triangular, and square-wave inputs, selecting one capacitor branch at a time.
-\item Repeat representative tests near 1~Hz and 10~kHz, allowing adequate settling time for the low-frequency coupling and feedback networks.
-\end{enumerate}
+\begin{minipage}[t]{0.45\textwidth}
+    \vspace{0pt}
+    \centering
+    \includegraphics[width=\linewidth]{images/differentiator.jpeg}
+    \captionof{figure}{Differentiator circuit}
+    \label{fig:differentiator}
+\end{minipage}\hfill%
+\begin{minipage}[t]{0.45\textwidth}
+    \vspace{0pt}
+    \centering
+    \includegraphics[width=\linewidth]{images/integrator.jpeg}
+    \captionof{figure}{Integrator circuit}
+    \label{fig:integrator}
+\end{minipage}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\textwidth]{images/Breadboard.png}
+    \caption{Adder,Subtractor, and Multiplier breadboard prototype.}
+    \label{fig:BreadBoard Prototype}
+\end{figure}
 
-Breadboards introduce long connection loops, contact uncertainty, and parasitic capacitance. These effects are especially relevant to the differentiator and discrete multiplier. Short feedback paths, local bypassing, consistent grounding, and suitable signal amplitudes help separate circuit behaviour from the test setup. Any observed ringing or offset should be recorded before the PCB revision is finalized.
+
+
+The team constructed and tested breadboard prototypes after simulation. This stage provided the opportunity to inspect practical polarity, biasing, gain, clipping, and waveform behaviour before committing to the PCB.
+
+Breadboards introduce long connection loops, contact uncertainty, and parasitic capacitance. These effects are especially relevant to the differentiator and discrete multiplier. Short feedback paths, local bypassing, consistent grounding, and suitable signal amplitudes help separate circuit behaviour from the test setup.
 
 \subsection{Final PCB Implementation}
+
 The team reports that the final circuits were implemented on a PCB following breadboard testing. The supplied PCB and schematic files document that implementation stage. A physically assembled board, however, may contain component substitutions or corrected connections that are not reflected in an older project file. The IC4 multiplier-net issue and the recorded layer-stack discrepancy therefore require comparison with the actual built board.
 
 A suitable final inspection records solder-joint condition, connector polarity, continuity of power and ground, regulator output under load, quiescent supply current, and the absence of unintended shorts. Signal tests should then be repeated using the same settings as the breadboard comparisons. Such a sequence supports a defensible comparison of simulation, prototype, and PCB behaviour.
@@ -656,8 +672,7 @@ The main educational outcome is practical understanding of how mathematical circ
 \end{enumerate}
 
 \section{Contribution of Group Members}
-The work covered theoretical design, simulation, breadboard testing, PCB development, component assembly, enclosure design, and documentation. The member details below are taken from the supplied cover-page information. Individual task allocations were not supplied and should be completed by the team before submission.
-
+The work covered theoretical design, simulation, breadboard testing, PCB development, component assembly, enclosure design, and documentation.
 % TODO: replace each contribution entry with the member's actual work.
 % Do not copy the senior group's contribution assignments.
 \begin{table}[htbp]
@@ -667,10 +682,10 @@ The work covered theoretical design, simulation, breadboard testing, PCB develop
 \toprule
 \textbf{Index number} & \textbf{Name} & \textbf{Individual contribution}\\
 \midrule
-240445H & N. Naagul & To be confirmed by the team.\\
-240601J & P. Sathjaharan & To be confirmed by the team.\\
-240602M & B. Sathursan & To be confirmed by the team.\\
-240525E & R. Prasannah & To be confirmed by the team.\\
+240445H & N. Naagul & Multiplier Circuit Design, PCB , Documentation.\\
+240601J & P. Sathjaharan & Adder,Subtractor Circuit Design, PCB , Documentation.\\
+240602M & B. Sathursan & Integrator Circuit Design, Enclosure , Documentation.\\
+240525E & R. Prasannah & Differentiator Circuit Design, Enclosure , Documentation.\\
 \bottomrule
 \end{tabularx}
 \end{table}
