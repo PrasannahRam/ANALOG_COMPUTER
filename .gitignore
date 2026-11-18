@@ -231,6 +231,7 @@ Thumbs.db
 .texpadtmp
 *.bak
 *.sav
+*.pdf
 
 # ---- Build output folders ----
 build/
