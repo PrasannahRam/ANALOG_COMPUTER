@@ -652,33 +652,32 @@ Breadboards introduce long connection loops, contact uncertainty, and parasitic 
 \begin{minipage}[t]{0.45\textwidth}
     \vspace{0pt}
     \centering
-    \includegraphics[width=0.8\textwidth]{images/PCB_Before.png}
+    \includegraphics[width=\textwidth]{images/after.png}
     \captionof{figure}{Final PCB After Soldering}
     \label{fig:PCB_After}
 \end{minipage}
 
 \subsection{Discussion of Accuracy and Practical Limitations}
-The operating range must be specified together with amplitude and error limits. Op-amp bandwidth alone cannot establish system accuracy: differential-pair linearity constrains multiplication, capacitor selection changes calculus scaling, and feedback controls alter pole positions. Resistor matching controls subtraction error, while capacitor tolerance directly changes the integration and differentiation constants.
 
-The design archive demonstrates a developed set of circuits and a physical implementation workflow. The saved power-supply observations and differentiator screenshots support specific simulation statements. They do not establish a measured percentage accuracy for all five operations or a fully characterized final PCB. The missing experimental quantities and the design-record inconsistencies should be resolved to complete that performance claim.
+\begin{itemize}
+    \item \textbf{Circuit accuracy and breadboard testing.} Component tolerances affected accuracy, and breadboard tests with through-hole resistors showed noisy, unstable outputs.
+
+    \item \textbf{Multiplier transistor matching.} A local BC550 shortage made it difficult to match six transistor pairs for $h_{\mathrm{FE}}$. Mismatch contributed to carrier leakage and extended debugging.
+
+    \item \textbf{PCB fabrication and assembly.} A temporary manufacturer closure delayed fabrication. A switch footprint issue left 16 pins across two switches shorted to the ground plane. Jumper wires beneath the PCB bypassed the affected connections.
+
+    \item \textbf{Performance verification.} Measuring all five operations across the intended frequency and amplitude ranges is needed to quantify final PCB accuracy.
+\end{itemize}
 
 \section{Conclusion \& Future Works}
 \subsection{Conclusion}
-The project developed an analog computing platform around op-amp arithmetic stages, a discrete transistor multiplication core, switched calculus networks, adjustable controls, and a separate regulated bipolar supply. The work progressed from circuit analysis and software simulation to breadboard testing and final PCB implementation, with an accompanying enclosure design. The retained native files provide a detailed record of the component values, signal interfaces, PCB geometry, and mechanical development.
-
-The circuit analysis establishes the intended sum, difference, product, derivative, and integral relationships and explains the practical factors that limit them. The 1~Hz--10~kHz specification remains the target input range, while numerical full-band accuracy requires the final hardware measurements. Reconciliation of the multiplier recovery nets, the manufactured layer stack, and the value-specific BOM is necessary to make the archive fully consistent with the assembled system.
-
-The main educational outcome is practical understanding of how mathematical circuit models are affected by real devices, biasing, loading, tolerances, and layout. The report therefore records both the achieved development stages and the remaining evidence needed for a complete performance assessment.
-
+The project developed an analog computing platform around op-amp arithmetic stages, a discrete transistor multiplication core, switched calculus networks, adjustable controls. The work progressed from circuit analysis and software simulation to breadboard testing and final PCB implementation, with an accompanying enclosure design.The main outcome is practical understanding of how mathematical circuit models are affected by real devices, biasing, loading, tolerances, and layout.
 \subsection{Future Improvements}
 \begin{enumerate}
-\item \textbf{Reconcile the final design archive.} Compare the assembled multiplier recovery stage with the source schematic, document any corrected connections, and release the matching PCB revision.
 \item \textbf{Complete calibration and measurement.} Record amplitude, phase, frequency, DC offset, and load for every operation and range; establish a multiplier scale factor and usable input limits.
 \item \textbf{Improve multiplier balance.} Select matched transistor pairs, improve thermal symmetry, evaluate a more stable bias arrangement, and provide repeatable offset and scale adjustment within the permitted component rules.
 \item \textbf{Improve calculus controls.} Use clearly labelled range settings, consider mutually exclusive capacitor selection, and add an integrator reset or initialization control.
 \item \textbf{Refine impedance and gain handling.} Evaluate dedicated input buffering and, if required, a true post-calculus gain stage. Such changes should be documented as revisions rather than attributed to the present selector topology.
-\item \textbf{Finalize manufacturing documentation.} Correct value-specific manufacturer part numbers, confirm the fabricated layer stack, and provide the complete fabrication and assembly outputs.
-\item \textbf{Complete enclosure validation.} Confirm units, internal clearances, fastening, control alignment, thermal behaviour, and the final material and manufacturing process.
 \end{enumerate}
 
 \section{Contribution of Group Members}
