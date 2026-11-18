@@ -503,103 +503,69 @@ The arithmetic selector S1 is an SS-13D01G5 device that routes one of three arit
 % \caption{Two non-inverting input gain-control stages reconstructed from the supplied Altium sheet.}
 % \end{figure}
 
-\subsection{Regulated Bipolar Power Supply}
-\subsubsection{Architecture and Component Values}
-The repository documents a nominal $\pm15$~V supply for the analog circuits~\cite{repository}. A 230~V, 50~Hz source feeds a centre-tapped 15--0--15~V transformer. Four 1N4007 diodes provide full-wave dual-rail rectification. Two 2200~\uF\ capacitors smooth the rectified rails before LM7815CT and LM7915CT regulators establish the positive and negative outputs. The centre tap provides the common reference.
-
-\begin{table}[htbp]
-\centering\small
-\caption{Power-supply design values from the repository and decoded Multisim circuit.}
-\begin{tabularx}{\textwidth}{P{0.31\textwidth}P{0.25\textwidth}Y}
-\toprule
-\textbf{Element} & \textbf{Value or part} & \textbf{Purpose}\\
-\midrule
-Transformer & 230~V : 15--0--15~V & Isolation and voltage reduction; current/VA rating requires confirmation.\\
-Rectifiers & Four 1N4007 & Full-wave rectification.\\
-Bulk capacitors & Two 2200~\uF, specified $\geq35$~V in README & Low-frequency smoothing; C11 and C12 in the decoded supply simulation.\\
-Regulator input capacitors & Two 330~nF & Local input bypassing; C9 and C10 in simulation.\\
-Regulators & LM7815CT / LM7915CT & Nominal $+15$~V / $-15$~V outputs.\\
-Output capacitors & Two 100~\uF\ and two 100~nF & Bulk output support and high-frequency bypassing.\\
-Diode bypass capacitors & Four 100~nF & Proposed reduction of rectifier switching transients.\\
-Simulation loads & Two 300~\ohm & Represent approximately 50~mA per rail; not computational-board components.\\
-Primary fuse & Rating not supplied & Select to suit transformer and actual assembly.\\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-The regulator input and output capacitors must follow the actual manufacturer's stability requirements. Positive and negative regulator pinouts and tab connections differ and must be checked separately~\cite{lm7815,lm7915}. The 100~nF capacitors across the diodes are recorded design elements; their presence alone does not establish a measured improvement in switching noise.
-
-\subsubsection{Transformer Ratio and Rectified Headroom}
-If the transformer-model ratio refers to the full 30~V secondary,
-\begin{equation}
-\frac{N_P}{N_S}=\frac{230}{30}\approx7.67.
-\end{equation}
-The repository records correcting an earlier ratio near 15.3 to approximately 7.65 so that each half-secondary has the intended voltage. The mains source's simulation peak of 325.301~V corresponds to approximately 230~V RMS.
-
-For each 15~V RMS half-secondary,
-\begin{equation}
-V_{\mathrm{peak}}=15\sqrt{2}\approx21.21~\mathrm{V}.
-\end{equation}
-Using an illustrative conducting-diode drop of 0.9~V in the centre-tap-referenced charging path,
-\begin{equation}
-|V_{\mathrm{raw,peak}}|\approx21.21-0.9\approx20.31~\mathrm{V}.
-\end{equation}
-The actual minimum raw voltage depends on transformer regulation, line voltage, diode drop, loading, and ripple. Satisfactory regulation is established by the ripple valley rather than the average raw voltage alone.
-
-\subsubsection{Ripple, Load, and Thermal Calculations}
-For full-wave rectification at a 50~Hz input, the principal ripple frequency is 100~Hz. The approximate reservoir ripple is
-\begin{equation}
-\Delta V_{\mathrm{pp}}\approx\frac{I_L}{f_rC_B}.
-\end{equation}
-With $C_B=2200$~\uF,
-\begin{align}
-I_L=50~\mathrm{mA}:\quad &\Delta V_{\mathrm{pp}}\approx0.227~\mathrm{V},\\
-I_L=100~\mathrm{mA}:\quad &\Delta V_{\mathrm{pp}}\approx0.455~\mathrm{V}.
-\end{align}
-The 100~mA value is a design example in the README, while a 300~\ohm\ load at 14.9~V draws approximately 49.7~mA. These conditions should not be confused.
-
-For the 100~mA example, the estimated raw-voltage valley is approximately 19.85~V. Relative to a conservative 17.5~V magnitude used for checking regulation headroom, this leaves approximately 2.35~V under the assumed nominal conditions. Low mains voltage and transformer droop must still be included in a final loaded check.
-
-Approximate regulator dissipation is
-\begin{equation}
-P_R\approx\left(|V_{\mathrm{in,avg}}|-|V_{\mathrm{out}}|\right)I_L.
-\end{equation}
-For a 20~V average raw rail and a 15~V output, it is about 0.25~W at 50~mA or 0.5~W at 100~mA per regulator. A thermal decision requires ambient temperature, enclosure conditions, and the relevant thermal resistance; a nominal 0.5~W calculation does not itself prove that a heatsink is unnecessary.
-
-The transformer rating and measured complete-board current were not supplied. The final load budget should include all six dual op-amp packages, the transistor bias network, signal-load current, and regulator overhead. It should not include an assumed CD4051 unless that device is present in the actual assembly.
-
-\subsubsection{Grounding and Decoupling}
-Rectifier charging currents should return directly to the reservoir-capacitor and transformer reference region. The low-level signal ground should connect to that reference without sharing long, high-current return paths. Local bypass capacitors at the op-amp supply pins complement the supply's bulk capacitors. The computational design includes twelve nominal 100~nF rail-bypass capacitors and two nominal 100~\uF, 35~V rail-entry capacitors.
-
-The enclosure and wiring arrangement should maintain separation between the mains primary and accessible signal circuitry. Fuse, strain relief, insulation, and any required protective-earth connection are physical-build provisions; their implementation is not established by the retained simulation files.
 
 \section{Component Selection}
 \subsection{NE5532 Operational Amplifiers}
-NE5532D dual op-amps are specified for IC1--IC6. Dual packages reduce component count and allow related functions to share a compact layout. The current TI electrical tables list a typical 12~MHz unity-gain bandwidth, 5~V/$\mu$s slew rate, and 5~nV/$\sqrt{\mathrm{Hz}}$ input voltage noise at 1~kHz~\cite{ne5532}. Older project notes quote 10~MHz and 9~V/$\mu$s; the device manufacturer and datasheet revision should therefore accompany any quoted specification.
 
-At 10~kHz and a 10~V peak sine output, the required slope is
-\begin{equation}
-\mathrm{SR}_{\mathrm{required}}=2\pi fV_P
-\approx0.628~\mathrm{V}/\mu\mathrm{s}.
-\end{equation}
-This is below the cited typical slew rate, but the calculation does not establish waveform accuracy under every closed-loop gain and load. Square-wave edges contain higher-frequency components, and high noise gain reduces available loop gain. Input common-mode range, output headroom, supply current, and stability must also be checked. The NE5532 is not rail-to-rail, and its bipolar input bias current is relevant to 100~\kohm\ networks.
+\noindent
+\begin{minipage}[t]{0.62\textwidth}
+    \vspace{0pt}
+    \begin{itemize}
+        
+		\item Typical specifications are a 12~MHz unity-gain bandwidth,
+        a 5~V/$\mu$s slew rate, and an input voltage noise of
+        5~nV/$\sqrt{\mathrm{Hz}}$ at 1~kHz.
+
+        \item A 10~kHz sine wave with a 10~V peak output requires a slew
+        rate of 0.628~V/$\mu$s, below the typical device rating.
+    \end{itemize}
+\end{minipage}\hfill%
+\begin{minipage}[t]{0.34\textwidth}
+    \vspace{0pt}
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/ne5532.jpg}
+    \captionof{figure}{NE5532D dual operational amplifier.}
+    \label{fig:ne5532}
+\end{minipage}
+
 
 \subsection{BC550C Transistors}
-The six-transistor PCB design uses BC550C NPN devices. The onsemi data sheet identifies the BC550 as a low-noise transistor, with a 45~V collector-emitter maximum rating and a 100~mA DC collector-current maximum; the C gain group has a specified $h_{FE}$ range of 420--800 at its stated test condition~\cite{bc550}. These are component characteristics and limits, not the intended operating currents of the multiplier.
+\noindent
+\begin{minipage}[t]{0.62\textwidth}
+    \vspace{0pt}
+    \begin{itemize}
+        \item The Gilbert-cell multiplier uses six low-noise BC550C NPN
+        transistors (Q1--Q6).
 
-Matching the transistors' electrical characteristics and keeping the differential pairs at similar temperatures improves balance. Selecting the same gain group helps consistency but does not provide the matching of a monolithic transistor array. The actual collector, base, and emitter order must agree with the footprint and the sourced manufacturer's part.
+        \item The maximum collector-emitter voltage is 45~V and the
+        maximum DC collector current is 100~mA. The DC current gain
+        $h_{FE}$ ranges from 420 to 800 under the datasheet test
+        conditions~\cite{bc550}.
+
+        \item Matching the transistors and keeping them at similar
+        temperatures improves multiplier balance.
+    \end{itemize}
+\end{minipage}\hfill%
+\begin{minipage}[t]{0.34\textwidth}
+    \vspace{0pt}
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/BC550.jpeg}
+    \captionof{figure}{BC550C NPN transistor.}
+    \label{fig:bc550c}
+\end{minipage}
 
 \subsection{Resistors, Capacitors, and Controls}
-Precision resistor ratios are particularly important for the adder, subtractor, differential recovery, and attenuation networks. The final schematic includes values of 47~\ohm, 820~\ohm, 1~\kohm, 2.2~\kohm, 3.9~\kohm, 4.7~\kohm, 6.8~\kohm, 10~\kohm, and 100~\kohm. Small resistance values in the input-conditioning feedback paths provide attenuation rather than high gain.
+    \begin{itemize}
+        \item The Gilbert cell requires closely matched collector resistors ($R_C$)
+	in its differential stages. We ordered resistors with a 0.1\% tolerance
+	and selected SMD packages to keep connections short and reduce noise pickup.
 
-The timing capacitors establish the integration and differentiation scale factors. Their tolerance, leakage, dielectric behaviour, and voltage dependence affect calculation accuracy. A stable low-loss dielectric is preferable for the 22~pF compensation capacitor. Larger timing capacitances require particular attention to leakage and bias dependence. Supply electrolytics require adequate voltage rating and correct polarity.
-
-The supplied Altium sheets reuse the library identifiers CR0805-FX-1002ELF and CC0805KRX7R9BB104 for several different displayed values. These identifiers correspond to particular manufacturer parts, so they must not be copied unchanged into a procurement BOM for every resistor and capacitor. Appendix~\ref{app:bom} separates the schematic values from reusable library identifiers.
-
-The 1581-5 connector model is used for thirteen external terminals. The PCB contains both surface-mount component footprints and through-hole mechanical or connector features. Five WH148-series potentiometers and five switches provide the physical controls; their resistance values, panel clearances, and operating orientation should be confirmed during final assembly documentation.
+		\item We selected SMD capacitors to save PCB space and reduce noise pickup
+b		y keeping connecting traces short.
+    \end{itemize}
 
 \subsection{Population Summary}
-\begin{table}[htbp]
+\begin{table}[H]
 \centering
 \caption{Computational-board population recovered from the supplied PCB component records.}
 \begin{tabular}{lr}
@@ -618,155 +584,31 @@ Switches: one arithmetic, two output, two range switches & 5\\
 \bottomrule
 \end{tabular}
 \end{table}
-The count excludes the separate power supply, cables, fasteners, and enclosure. It is an archive-derived population count, not a count verified by physical inspection of the assembled board.
-
 \section{PCB Design}
-\subsection{Design Environment and Board Organization}
-Altium Designer was used to organize the four schematic sheets and the \texttt{Analog\_\allowbreak{}Computer\_\allowbreak{}New.PcbDoc} board. The project structure identifies the arithmetic sheet as the top-level document and includes the multiplier, calculus, and gain-control sheets. The integrated library supports the component symbols and footprints.
+\begin{minipage}[t]{0.5\textwidth}
+    \vspace{0pt}
+    \centering
+    \includegraphics[width=\linewidth]{images/PCB.png}
+    \captionof{figure}{PCB layout }
+    \label{fig:pcb}
+\end{minipage}\hfill%
+\begin{minipage}[t]{0.5\textwidth}
+    \vspace{0pt}
+    \centering
+    \includegraphics[width=\linewidth]{images/PCB.png}
+    \captionof{figure}{3D PCB layout}
+    \label{fig:pcb}
+\end{minipage}
 
-The recorded board outline spans approximately 5314.9606~mil horizontally and 4173.2283~mil vertically. Using 1~mil~=~0.0254~mm gives
-\begin{equation}
-\boxed{W_{\mathrm{PCB}}\approx135~\mathrm{mm},\qquad
-H_{\mathrm{PCB}}\approx106~\mathrm{mm}.}
-\end{equation}
-The native board contains 102 component instances and 59 named net records, including the three power-reference nets and intermediate arithmetic, multiplier, and calculus signals.
-
-Locating components by function helps control the sensitive analog paths. Short feedback connections reduce parasitic effects, paired multiplier devices benefit from a similar thermal environment, and local bypassing limits supply-loop area. Connectors and potentiometers must also align with the enclosure openings. These are the engineering considerations used to assess the layout; a completed DRC report was not supplied to demonstrate every final rule outcome.
-
-\subsection{Recorded Routing and Manufacturing Rules}
-\begin{table}[htbp]
-\centering\small
-\caption{Selected rules recorded in the PCB document. Values are settings, not a declaration that the board passed DRC.}
-\begin{tabularx}{\textwidth}{P{0.40\textwidth}P{0.22\textwidth}Y}
-\toprule
-\textbf{Rule} & \textbf{Recorded value} & \textbf{Metric equivalent}\\
-\midrule
-General preferred track width & 10~mil & 0.254~mm\\
-General minimum / maximum width & 10 / 39.3701~mil & 0.254 / 1.000~mm\\
-Preferred \texttt{+VCC} track width & 23.622~mil & 0.600~mm\\
-Copper clearance & 10~mil & 0.254~mm\\
-Via diameter / drill & 50 / 28~mil & 1.270 / 0.711~mm\\
-Hole-to-hole clearance & 10~mil & 0.254~mm\\
-Solder-mask expansion & 4~mil & 0.102~mm\\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-The schematic constraint file specifies a generic 10~mil routing width and a 50~mil via with a 28~mil hole. The PCB document additionally contains net-specific and layer-specific rules. Reviewing the actual board rules is therefore necessary rather than relying only on the schematic constraint file.
-
-\subsection{Layer-Stack and Export Consistency}
-The board's stored stack names four copper layers: Top Layer, Layer~1, Layer~2, and Bottom Layer. The project also records Gerber export selections for top and bottom copper, with associated masks, paste, overlays, and board profile. The available evidence therefore does not justify an unconditional statement that the manufactured board was two-layer or four-layer.
-
-The approved fabricated stack must be confirmed against the actual manufacturer outputs. If the design uses internal copper for connectivity or reference planes, those layers must be included in the fabrication output. If the physical board was manufactured as a two-layer board, the final source project should be reconciled with that stack. The two-layer statement in the senior's report is not evidence for this project's layer count.
-
-\subsection{Manufacturing and Assembly Outputs}
-The project references plated-drill data, drill reports, top and bottom Gerbers, mask and paste files, overlays, and CAM documents. These references show the configured output workflow, but not all referenced manufacturing files were included in the supplied file set.
-
-A complete reproducible release should contain the final schematic and PCB revision, the correct copper-layer outputs, solder masks and silkscreens, drill and route data, fabrication notes, a value-correct BOM, assembly information, and the enclosure production files. The final release should also include the relevant ERC and DRC reports. No unsupported claim is made that all these deliverables were already generated or approved.
-
-% OPTIONAL FIGURE: this is a component-origin view, not a Gerber rendering.
-% \begin{figure}[htbp]
-% \centering\includegraphics[width=\textwidth]{figures/06_pcb_component_placement.pdf}
-% \caption{Component origins and board outline recovered from the PCB file. Copper routing and pad geometry are omitted.}
-% \end{figure}
-% TODO: add genuine Altium copper-layer exports and final hardware photographs
-% only after they are available. No substitute hardware photographs are supplied.
+We intergrated Adder Subtractor and Multiplier into one putput port and one gain and differentiator in to one switch and port and another gain and integrator into one output port 
+these sets can be controlled seperatly with three seperate switches 
+this is a two layer pcb with a ground plane on the bottom layer and signal traces on the top layer
 
 \section{Enclosure Design}
-\subsection{Purpose and Available Mechanical Files}
-The enclosure provides mechanical support, reduces accidental contact with the board, and organizes access to the signal terminals and controls. The supplied \texttt{Enclosure.STL} mesh and the repository's Enclosure branch document a custom mechanical design. That branch contains SolidWorks part files, a STEP model for the box, and STL and 3MF lid files. These are the current project's records; the perspex construction described in the senior's report is not adopted as a fact about this enclosure.
-
-\subsection{Recovered Geometry and PCB Allowance}
-The supplied enclosure mesh has a bounding envelope of
-\begin{equation}
-146\times117\times39.5\quad\text{model units}.
-\end{equation}
-It is a closed mesh with 146464 triangular faces. STL files do not encode a unit convention. If the intended unit is millimetres, the enclosure envelope is approximately $146\times117\times39.5$~mm. This interpretation should be confirmed using the original CAD export settings.
-
-Under that interpretation, the difference between the enclosure's external plan dimensions and the $135\times106$~mm PCB is 11~mm in each direction, or a nominal external allowance of 5.5~mm per side for a centred board. This is not the usable internal clearance: wall thickness, corner features, supports, and manufacturing tolerance reduce the available space.
-
-The geometry includes a base, raised support features, and labelled control regions. Markings visible on the supplied mesh identify grounds, arithmetic functions, differentiation, integration, inputs, gain controls, and tuners. Its final fit must accommodate the board, component heights, solder joints, panel-mounted controls, and cable bending space. The potentiometer library indicates a component height near 21~mm, making the control envelope relevant even though the final assembly clearance cannot be established from a bounding box alone.
-
-\subsection{Lid, Access, and Assembly}
-The repository lid STL has an axis-aligned envelope of approximately $147\times23.5\times118$ model units in its saved orientation. After allowing for orientation, its two broad dimensions are approximately 147 and 118 units. It should not be described as a simple 23.5~mm flat sheet; its geometry includes shaped openings and raised or folded features.
-
-The lid and supplied base should be checked as an assembly in CAD before their fit is treated as established. Openings should align with terminals, selector switches, and adjustment shafts. The mechanical files demonstrate enclosure design, but the final material, printing or machining settings, wall specification, fastener size, and physical fabrication status were not supplied. Consequently, no particular polymer, infill percentage, laser-cutting process, or finished enclosure photograph is claimed.
-
-A practical assembly sequence is to secure the PCB on suitable supports, check clearances beneath the board, connect the low-voltage supply and external terminals, confirm control accessibility, and fit the lid without stressing the board. Any mains-side supply assembly should retain its required separation and protection independently of the low-voltage computational enclosure.
-
-% OPTIONAL FIGURES: generated from the actual supplied/repository STL geometry.
-% \begin{figure}[htbp]
-% \centering\includegraphics[width=0.85\textwidth]{figures/07_enclosure_isometric.pdf}
-% \caption{Supplied enclosure STL geometry. Axis dimensions are model units; the millimetre convention requires confirmation.}
-% \end{figure}
-% \begin{figure}[htbp]
-% \centering\includegraphics[width=0.8\textwidth]{figures/08_lid_isometric.pdf}
-% \caption{Lid geometry retained in the Enclosure branch, shown in its saved orientation.}
-% \end{figure}
 
 \section{Software Simulation and Hardware Testing}
-\subsection{Verification Strategy}
-The project followed a staged development process: mathematical analysis, software simulation, breadboard testing, and PCB implementation. The team confirms that simulation and breadboard tests preceded the final PCB. The retained files document the simulation configurations and design revisions, while the numerical hardware measurements remain to be added to the final experimental record.
-
-The verification objective is to compare each measured output with the correct mathematical relationship under a stated input frequency, amplitude, DC offset, load, supply voltage, and control setting. A waveform with the expected general shape supports qualitative operation, but quantitative accuracy requires amplitude and phase measurements over the declared operating range.
-
-\subsection{Simulation Software and Retained Circuits}
-LTspice drafts cover the subtractor and several multiplier approaches. They include log/antilog-style exploratory circuits as well as Gilbert-cell variants, together with NE5532 symbol and model files. Multisim records include the differentiator, integrator, multiplier variants, a working Gilbert-cell circuit, the regulated supply, and a combined simulation.
-
-The compressed native Multisim documents were decoded to inspect their saved component assignments. They were not rerun in Multisim during preparation of this report. Reading a saved circuit file verifies its configuration, not its numerical performance. The distinction also applies to instrument settings retained in a file.
-
-\begin{table}[htbp]
-\centering\small
-\caption{Simulation records and the evidence they provide.}
-\begin{tabularx}{\textwidth}{P{0.33\textwidth}Y}
-\toprule
-\textbf{Record} & \textbf{Relevant content}\\
-\midrule
-\texttt{substractor.asc} & Equal 10~\kohm\ network, $\pm15$~V supplies, 2~V and 5~V peak 10~kHz inputs, 5~ms transient command.\\
-\texttt{Differential\_\allowbreak{}Circuit.ms14} & Switched input-capacitance differentiator; older and newer records differ in compensation and output coupling.\\
-\texttt{Integratior\_\allowbreak{}Circuit.ms14} & Four feedback capacitor options, 10~\kohm\ input resistance, and a 100~\kohm\ adjustable feedback element.\\
-\texttt{Working\_\allowbreak{}Gilbert\_\allowbreak{}Cell\_\allowbreak{}1744.ms14} & Discrete Gilbert-cell test with BC547C models and small internal sinusoidal drives; a saved test configuration, not final accuracy data.\\
-\texttt{Multiplier.ms14} and variants & Input attenuation/inversion, 470~\uF\ coupling, transistor bias network, and output-stage development.\\
-\texttt{Power\_\allowbreak{}Supply.ms14} & Rectification, 2200~\uF\ reservoirs, LM7815CT/LM7915CT regulation, and 300~\ohm\ loads.\\
-\texttt{Combined.ms14} & Combined development configuration retained on the combined-circuit branch.\\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-The subtractor draft references \texttt{ne5532.sub}, whereas the retained repository model is named \texttt{NE5532.lib}. The model include should be aligned with the available file before rerunning that draft, particularly on a case-sensitive system.
-
-Several Multisim component instances retain temporary designators beginning with U even when they represent passive components. The Altium references are therefore used consistently in this report's circuit descriptions. This avoids incorrectly treating a temporary simulation label as a semiconductor part type.
-
-\subsection{Retained Simulation Observations}
-\subsubsection{Power-Supply Record}
-The repository README reports the following Multisim observations. They are quoted as archived simulation results, with no claim that they were reproduced on the assembled hardware.
-
-\begin{table}[htbp]
-\centering
-\caption{Power-supply simulation observations reported in the repository README.}
-\begin{tabular}{llll}
-\toprule
-\textbf{Node} & \textbf{DC value} & \textbf{Reported ripple} & \textbf{Frequency}\\
-\midrule
-Positive regulated rail, PR1 & $+14.9$~V & 198~$\mu$V p-p & 100~Hz\\
-Negative regulated rail, PR2 & $-14.9$~V & 1.01~mV p-p & 100~Hz\\
-Secondary probe, PR3 & Not stated & 41.6~V p-p AC & 50~Hz\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-The 14.9~V magnitude differs from 15~V by approximately 0.67\%. The negative-rail ripple is slightly greater than 1~mV; therefore, the README's accompanying statement that both rails have sub-millivolt ripple is not consistent with its own table. The secondary measurement also requires its exact probe location to distinguish a half-secondary measurement from a full-secondary measurement. Neither issue should be resolved by changing the recorded numbers without evidence.
-
-\subsubsection{Differentiator Development Screenshot}
-One retained screenshot shows an early differentiator test with a 100~\kohm\ feedback resistor, a 10~pF input capacitor, and a 10~kHz triangular source. Its displayed traces show a differentiated level response with transition disturbances. The screenshot's probe display includes approximately 274~mV peak-to-peak and a 10~kHz frequency reading. This is a historical simulation snapshot; the capacitance differs from the final 1~nF high-frequency range, so it cannot verify that range's final gain or accuracy.
-
-A separate retained screenshot shows the later switched input bank and 22~pF feedback compensation. It documents the circuit arrangement but does not provide a complete calibrated waveform dataset. Neither screenshot is a hardware oscilloscope capture.
-
-% OPTIONAL FIGURE: retain the caption's historical qualification.
-% \begin{figure}[htbp]
-% \centering\includegraphics[width=\textwidth]{figures/10_differentiator_early_test.png}
-% \caption{Earlier 10 pF differentiator simulation at 10 kHz. This is exploratory evidence, not final hardware performance.}
-% \end{figure}
+\subsection{Software Simulation}
+\subsection{Hardware Testing}
 
 \subsection{Breadboard Implementation and Testing}
 The team constructed and tested breadboard prototypes after simulation. This stage provided the opportunity to inspect practical polarity, biasing, gain, clipping, and waveform behaviour before committing to the PCB. The following sequence documents the checks needed to make those observations reproducible; individual numerical readings were not retained in the supplied record.
@@ -788,74 +630,6 @@ The team reports that the final circuits were implemented on a PCB following bre
 
 A suitable final inspection records solder-joint condition, connector polarity, continuity of power and ground, regulator output under load, quiescent supply current, and the absence of unintended shorts. Signal tests should then be repeated using the same settings as the breadboard comparisons. Such a sequence supports a defensible comparison of simulation, prototype, and PCB behaviour.
 
-% TODO: insert genuine photographs of your breadboard and final PCB here.
-% \begin{figure}[htbp]
-% \centering\includegraphics[width=0.8\textwidth]{figures/breadboard_actual.jpg}
-% \caption{Actual breadboard implementation. Supply this photograph before uncommenting.}
-% \end{figure}
-% \begin{figure}[htbp]
-% \centering\includegraphics[width=0.8\textwidth]{figures/final_pcb_actual.jpg}
-% \caption{Actual final PCB. Supply this photograph before uncommenting.}
-% \end{figure}
-
-\subsection{Quantitative Evaluation Methods}
-For a nonzero theoretical output amplitude $A_{\mathrm{th}}$, the relative amplitude error can be calculated as
-\begin{equation}
-\epsilon_A=\frac{|A_{\mathrm{meas}}-A_{\mathrm{th}}|}{|A_{\mathrm{th}}|}\times100\%.
-\end{equation}
-A near-zero theoretical output should instead be assessed by its absolute residual voltage; a relative percentage becomes ill-conditioned. For sinusoidal signals, measured time shift $\Delta t$ gives the phase displacement
-\begin{equation}
-\Delta\phi=360^\circ f\Delta t,
-\end{equation}
-with sign determined from which waveform leads. Differentiation and integration should be compared with the relevant practical transfer function when operating near a pole.
-
-A multiplier calibration can be obtained from a small-signal AC reference: apply known sine amplitudes, fit the expected product waveform, and determine $K_m$ from its recovered magnitude. For equal-frequency in-phase sine inputs, the ideal DC and second-harmonic magnitudes are each $K_mAB/2$. This avoids assuming that the AC-coupled multiplier accepts a constant external input as a DC calibration source. The recovered DC component should be measured with DC coupling.
-
-If a spectrum measurement is available, report THD as
-\begin{equation}
-\mathrm{THD}=\frac{\sqrt{\sum_{n=2}^{N}V_{n,\mathrm{RMS}}^2}}
-{V_{1,\mathrm{RMS}}}\times100\%.
-\end{equation}
-For multiplication, intended sum and difference products must be distinguished from unwanted distortion products. Instrument bandwidth, probe attenuation, input termination, and sampling settings should accompany any numerical result.
-
-\subsection{Verification Matrix and Experimental Record}
-\begin{longtable}{P{0.19\textwidth}P{0.38\textwidth}P{0.34\textwidth}}
-\caption{Functional verification matrix. Expected responses below are theoretical.}\\
-\toprule
-\textbf{Function} & \textbf{Test input or condition} & \textbf{Expected observation}\\
-\midrule\endfirsthead
-\toprule\textbf{Function} & \textbf{Test input or condition} & \textbf{Expected observation}\\\midrule\endhead
-Adder & Two in-phase sine inputs, e.g. 1~V and 2~V peak. & Sum waveform of 3~V peak, within headroom.\\
-Subtractor & Identical inputs, then exchange unequal inputs. & Small residual for identical inputs; sign reversal when unequal inputs are exchanged.\\
-Multiplier & Two small-signal sinusoids at distinct frequencies. & Calibrated product with sum/difference frequency terms, after verifying the recovery connection.\\
-Differentiator & Sine or triangular input with one documented capacitor selected. & Scaled derivative with the practical network's gain and phase.\\
-Integrator & Zero-offset square wave or sinusoid with a known initial condition. & Triangular output or scaled integrated sinusoid, with finite low-frequency leakage.\\
-Gain controls & Fixed sine input and several potentiometer settings. & Non-inverting gain consistent with measured feedback resistance; no clipping.\\
-Power supply & No-load and defined-load conditions. & Rail voltages, ripple, and temperature consistent with the selected regulators and load.\\
-Selectors & Verify each position by continuity and signal tracing. & Only the selected source reaches the intended output terminal.\\
-Frequency range & Repeat at 1, 5, 10, 100, 1000, and 10000~Hz, with range changes documented. & Results compared to the corresponding transfer functions, without treating a few spot tests as a complete sweep.\\
-\bottomrule
-\end{longtable}
-
-% TODO: replace "Not supplied" with actual retained readings; do not invent data.
-\begin{table}[htbp]
-\centering\small
-\caption{Hardware quantities required to complete the experimental results.}
-\begin{tabularx}{\textwidth}{P{0.58\textwidth}Y}
-\toprule
-\textbf{Quantity} & \textbf{Available value}\\
-\midrule
-Measured loaded positive / negative supply voltage & \notrecorded\\
-Measured complete-board current and supply ripple & \notrecorded\\
-Adder gain error and subtractor common-input residual & \notrecorded\\
-Multiplier calibrated $K_m$, input limits, and distortion & \notrecorded\\
-Differentiator amplitude / phase error for each range & \notrecorded\\
-Integrator amplitude / phase error and drift & \notrecorded\\
-Final board frequency sweep and test load & \notrecorded\\
-Instrument model, probe factor, and uncertainty & \notrecorded\\
-\bottomrule
-\end{tabularx}
-\end{table}
 
 \subsection{Discussion of Accuracy and Practical Limitations}
 The operating range must be specified together with amplitude and error limits. Op-amp bandwidth alone cannot establish system accuracy: differential-pair linearity constrains multiplication, capacitor selection changes calculus scaling, and feedback controls alter pole positions. Resistor matching controls subtraction error, while capacitor tolerance directly changes the integration and differentiation constants.
@@ -906,249 +680,6 @@ The work covered theoretical design, simulation, breadboard testing, PCB develop
 We thank the academic staff and laboratory staff of the Department of Electronic and Telecommunication Engineering, University of Moratuwa, for the guidance and facilities associated with the EN~2091 Laboratory Practice and Projects module. We also acknowledge the contributions of all group members throughout the design, simulation, testing, and implementation stages. The earlier student report provided to the group was useful as a reference for the organization and presentation of the project documentation.
 % TODO: add the correct supervisor/lecturer names only after confirming them.
 
-\clearpage
-\addcontentsline{toc}{section}{References}
-\begin{thebibliography}{99}
-\bibitem{brief}
-Department of Electronic and Telecommunication Engineering, University of Moratuwa, ``Analog Computer,'' project requirements supplied as \textit{Analog Computer(1).pdf}, EN~2091 Laboratory Practice and Projects, undated.
-\bibitem{repository}
-Project team, ``ANALOG\_COMPUTER,'' project repository, including Documentation, Enclosure, Multiplier, Power-Supply, combined-circuit, diff\_integ, master, and schematic-and-PCB branches. Accessed: Nov.~17, 2026. [Online]. Available: \url{https://github.com/PrasannahRam/ANALOG_COMPUTER}
-\bibitem{designfiles}
-Project team, ``Analog-computer-sem3,'' Altium schematic, PCB, integrated-library, project, and constraint files; associated Multisim simulations and enclosure mesh, supplied project design archive, 2026.
-\bibitem{adi}
-Analog Devices, ``Multipliers vs. Modulators,'' \textit{Analog Dialogue}. Accessed: Nov.~17, 2026. [Online]. Available: \url{https://www.analog.com/en/resources/analog-dialogue/articles/multipliers-vs-modulators.html}
-\bibitem{panasonic}
-Panasonic Industry, ``FK series: Aluminum Electrolytic Capacitors, Surface Mount Type,'' series catalog, Feb.~2026. Accessed: Nov.~17, 2026. [Online]. Available: \url{https://industrial.panasonic.com/cdbs/www-data/pdf/RDE0000/ABA0000C1181.pdf}
-\bibitem{lm7815}
-Texas Instruments, ``LM340, LM340A and LM7805 Family Wide VIN 1.5-A Fixed Voltage Regulators,'' data sheet SNOSBT0L, Sep.~2016. [Online]. Available: \url{https://www.ti.com/lit/ds/symlink/lm340.pdf}
-\bibitem{lm7915}
-Texas Instruments, ``LM79XX Series 3-Terminal Negative Regulators,'' data sheet SNOSBQ7C, May~2013. [Online]. Available: \url{https://www.ti.com/lit/ds/symlink/lm79.pdf}
-\bibitem{ne5532}
-Texas Instruments, ``NE5532x, SA5532x Dual Low-Noise Operational Amplifiers,'' data sheet SLOS075K, Dec.~2025. [Online]. Available: \url{https://www.ti.com/lit/ds/symlink/ne5532.pdf}
-\bibitem{bc550}
-onsemi, ``BC546 / BC547 / BC548 / BC549 / BC550: NPN Epitaxial Silicon Transistor,'' data sheet BC550/D, Rev.~6, Feb.~2026. [Online]. Available: \url{https://www.onsemi.com/pdf/datasheet/bc550-d.pdf}
-\end{thebibliography}
 
-\clearpage
-\appendix
-\section{Project File and Branch Inventory}
-\label{app:inventory}
-\subsection{Supplied Design Files}
-The following files were reviewed directly, with native schematic and PCB metadata extracted where applicable:
-\begin{itemize}
-\item \texttt{Analog Computer(1).pdf}: original project requirements.
-\item Four computational circuit sheets: \texttt{Adder\_\allowbreak{}Substractor.SchDoc}, \texttt{Multiplier.SchDoc}, \texttt{integrator and differentiator.SchDoc}, and \texttt{Gain\_\allowbreak{}controller.SchDoc}.
-\item \texttt{Analog\_\allowbreak{}Computer\_\allowbreak{}New.PcbDoc}: board outline, component records, nets, stack settings, and design rules.
-\item Project organization, component resources, and settings: \texttt{Analog-computer-sem3.\allowbreak{}PrjPcb}, \texttt{Analog-computer-sem3.\allowbreak{}PrjPcbStructure}, \texttt{Analog-computer-sem3.\allowbreak{}IntLib}, and \texttt{Constraints.xml}.
-\item \texttt{Multiplier.ms14}, \texttt{Integratior\_\allowbreak{}Circuit.ms14}, and \texttt{Differential\_\allowbreak{}Circuit(1).ms14}: supplied Multisim circuits, including their decoded component assignments.
-\item \texttt{Enclosure.STL}: supplied enclosure geometry.
-\item \texttt{Senior's Project Report For Reference.pdf}: earlier group's report, used for structure only. The separately retained \texttt{Project\_\allowbreak{}report\_\allowbreak{}12.pdf} contains the same senior-project subject matter and member details.
-\end{itemize}
-The separately listed \texttt{Differential\_\allowbreak{}Circuit.ms14} is also represented among the repository simulation records. Filename spelling is retained so that the source documents can be located reliably.
 
-\subsection{Repository Coverage}
-All eight branch heads were inspected on 17~November~2026. Repeated files were treated as shared history, while differing file contents were retained as variants.
-\begin{longtable}{P{0.25\textwidth}P{0.66\textwidth}}
-\caption{Repository branches and their main documentary value.}\\
-\toprule\textbf{Branch} & \textbf{Content relevant to this report}\\\midrule\endfirsthead
-\toprule\textbf{Branch} & \textbf{Content relevant to this report}\\\midrule\endhead
-Documentation & Supply README, component shopping list, simulation notes, report skeleton, LTspice drafts, and Multisim circuits.\\
-Enclosure & SolidWorks box and lid parts, STEP box model, and STL/3MF lid files, with inherited circuit files.\\
-Multiplier & Multiplier developments and an earlier differentiator note/screenshot variant.\\
-Power-Supply & Supply simulation, regulator-related library resources, and associated design documentation.\\
-combined-circuit & Combined Multisim circuit in addition to inherited individual circuits.\\
-diff\_integ & Differentiator and integrator simulations, notes, and screenshot evidence.\\
-master & Shared project development files and supply documentation.\\
-schematic-and-PCB & Altium project configuration and inherited circuit-design material.\\
-\bottomrule
-\end{longtable}
-The branch tips used for this review are recorded in the accompanying source notes. Repository project references do not replace the separately supplied native SchDoc and PcbDoc files when those referenced files are absent from the branch itself.
-
-\section{Detailed Computational-Board Component Schedule}
-\label{app:bom}
-The schedule below preserves the electrical values shown in the supplied schematics. It is a design schedule rather than a procurement-approved BOM. Part numbers for reused library symbols, the five potentiometer resistances, voltage ratings, and final fitted substitutions require confirmation.
-% The complete schedule is generated below and remains part of this single file.
-\Needspace{12\baselineskip}
-\subsection{Adder Substractor}
-\begingroup
-\small
-\renewcommand{\arraystretch}{1.08}
-\begin{longtable}{P{0.30\textwidth}P{0.52\textwidth}r}
-\toprule\textbf{References} & \textbf{Specified value or function} & \textbf{Qty.}\\\midrule\endfirsthead
-\toprule\textbf{References} & \textbf{Specified value or function} & \textbf{Qty.}\\\midrule\endhead
-R3, R1, R2, R4, R7, R5, R6, R8 & 4.7~\kohm & 8\\
-IC1 & NE5532D & 1\\
-C11, C12 & 100~nF (bypass) & 2\\
-C6, C7 & 100~\uF, 35 V (library part) & 2\\
-Vcc, -Vcc, Vin\_1\&3\_grd, Vin\_2\&4\_grd, Ground, Vin\_1, Vin\_2, OUT\_1, O\_grd & 1581-5 terminal & 9\\
-S1 & SS-13D01G5 arithmetic selector & 1\\
-R40 & 100~\kohm & 1\\
-\bottomrule
-\end{longtable}
-\endgroup
-\Needspace{12\baselineskip}
-\subsection{Multiplier}
-\begingroup
-\small
-\renewcommand{\arraystretch}{1.08}
-\begin{longtable}{P{0.30\textwidth}P{0.52\textwidth}r}
-\toprule\textbf{References} & \textbf{Specified value or function} & \textbf{Qty.}\\\midrule\endfirsthead
-\toprule\textbf{References} & \textbf{Specified value or function} & \textbf{Qty.}\\\midrule\endhead
-IC2, IC3, IC4 & NE5532D & 3\\
-R10, R14 & 47~\ohm & 2\\
-R9, R12, R11, R13, R16, R15, R20, R21, R23, R24, R29, R27, R28, R30 & 4.7~\kohm & 14\\
-R17, R18 & 2.2~\kohm & 2\\
-R19 & 6.8~\kohm & 1\\
-R22, R25 & 3.9~\kohm & 2\\
-R26 & 820~\ohm & 1\\
-R31 & 1~\kohm & 1\\
-C1, C2, C3, C4 & 470~\uF, 16 V (library part) & 4\\
-C14, C13, C15, C16, C17, C18 & 100~nF (bypass) & 6\\
-VR1 & Resistance not assigned; WH148 control & 1\\
-Q1, Q2, Q4, Q3, Q5, Q6 & BC550C & 6\\
-\bottomrule
-\end{longtable}
-\endgroup
-\Needspace{12\baselineskip}
-\subsection{integrator and differentiator}
-\begingroup
-\small
-\renewcommand{\arraystretch}{1.08}
-\begin{longtable}{P{0.30\textwidth}P{0.52\textwidth}r}
-\toprule\textbf{References} & \textbf{Specified value or function} & \textbf{Qty.}\\\midrule\endfirsthead
-\toprule\textbf{References} & \textbf{Specified value or function} & \textbf{Qty.}\\\midrule\endhead
-IC5 & NE5532D & 1\\
-R34, R33, R41, R42 & 100~\kohm & 4\\
-R36, R37 & 10~\kohm & 2\\
-C20, C19 & 100~nF (bypass) & 2\\
-S4, S5 & 204-4ST four-section switch & 2\\
-Vin\_3, OUT\_2, OUT\_3 & 1581-5 terminal & 3\\
-C21 & 1~\uF & 1\\
-C22 & 100~nF & 1\\
-C23 & 10~nF & 1\\
-C24 & 1~nF & 1\\
-C25 & 22~pF & 1\\
-C26 & 47~\uF & 1\\
-C27 & 4.7~\uF & 1\\
-C28 & 470~nF & 1\\
-C29 & 47~nF & 1\\
-S2, S3 & SS12D00G3 output selector & 2\\
-VR3, VR2 & Resistance not assigned; WH148 control & 2\\
-\bottomrule
-\end{longtable}
-\endgroup
-\Needspace{12\baselineskip}
-\subsection{Gain controller}
-\begingroup
-\small
-\renewcommand{\arraystretch}{1.08}
-\begin{longtable}{P{0.30\textwidth}P{0.52\textwidth}r}
-\toprule\textbf{References} & \textbf{Specified value or function} & \textbf{Qty.}\\\midrule\endfirsthead
-\toprule\textbf{References} & \textbf{Specified value or function} & \textbf{Qty.}\\\midrule\endhead
-Vin\_4 & 1581-5 terminal & 1\\
-IC6 & NE5532D & 1\\
-C30, C31 & 100~nF (bypass) & 2\\
-R38, R39 & 1~\kohm & 2\\
-VR4, VR5 & Resistance not assigned; WH148 control & 2\\
-\bottomrule
-\end{longtable}
-\endgroup
-
-\subsection{Library-Part Reconciliation}
-All forty fixed resistors use the same CR0805-FX-1002ELF library identity, although the displayed electrical values differ. Similarly, the twenty-one CC0805KRX7R9BB104 library instances include both bypass and timing capacitor values. A purchasing list generated only from these repeated manufacturer-part fields would therefore be incorrect. The reference, electrical value, footprint, tolerance, voltage rating, and actual orderable part number must be reconciled together.
-
-The multiplier coupling-capacitor part is nominally 470~\uF, 16~V, while the rail-entry part EEE-FK1V101P is nominally 100~\uF, 35~V. Each capacitor's voltage must be checked across its own terminals. The $\pm15$~V rail designation alone does not establish the voltage stress across a signal-coupling capacitor.
-
-The earlier shopping list contains 270~\ohm, 3.3~\kohm, 50~\ohm, 100~\ohm, and 1~M\ohm\ values, five 1~\uF\ capacitors, three NE5532 packages, and 2N3904 devices including spares. It belongs to an earlier multiplier development and is not the 102-instance final computational-board schedule. It should be retained as development history rather than substituted for the schedule above.
-
-\clearpage
-\section{Design-Record Reconciliation and Submission Details}
-\label{app:reconcile}
-\subsection{Technical Items Requiring Confirmation}
-\begin{longtable}{P{0.21\textwidth}P{0.36\textwidth}P{0.34\textwidth}}
-\caption{Differences identified in the project records and their reporting implications.}\\
-\toprule\textbf{Item} & \textbf{Recorded evidence} & \textbf{Required reconciliation}\\\midrule\endfirsthead
-\toprule\textbf{Item} & \textbf{Recorded evidence} & \textbf{Required reconciliation}\\\midrule\endhead
-Multiplier recovery nets & R27 and R28 use \texttt{Vin\_\allowbreak{}1} and \texttt{Vin\_\allowbreak{}2}; collector nets have different names. & Compare the actual board with the schematic; confirm the collector-to-difference-amplifier route and release the matching revision.\\
-Gain-control topology & IC6 is driven by the original calculus inputs; S2/S3 select calculus or gain outputs. & Describe this as selectable input amplification unless an actual post-calculus connection is documented.\\
-PCB stack & Four copper layers named in the stored stack; the project export selection includes top and bottom copper. & Confirm the manufactured layer count and ensure all required internal copper is included in the production release.\\
-Differentiator compensation & Older Multisim: 150~pF; supplied file and Altium: 22~pF. & Use the fitted value in all transfer-function and error calculations.\\
-Differentiator high-frequency input capacitance & Final Altium: 1~nF; some early text uses 100 or 150~pF; an exploratory screenshot uses 10~pF. & Identify each as a separate revision; do not combine their gains or screenshots as one result.\\
-Output coupling & An older differentiator variant has 470~\uF\ coupling; the supplied later design is DC-coupled. & Apply the transfer function of the actual version.\\
-Transistor selection & 2N3904 LTspice drafts; BC547C or mixed Multisim models; BC550C final schematic. & Confirm fitted devices and report any model substitution.\\
-Potentiometer resistance & Mechanical identifiers in Altium; resistance values not assigned in comments. & Record installed values and actual control settings before specifying maximum gain or time constants.\\
-Part-number fields & One resistor/capacitor library identity reused for many electrical values. & Correct the value-specific manufacturing and procurement BOM.\\
-Supply switching reference & README mentions a CD4051; the computational component records contain manual switches. & Do not include CD4051 functionality or current draw unless separately documented in the final assembly.\\
-Supply ripple wording & README says sub-millivolt on both rails; its negative-rail value is 1.01~mV p-p. & Retain the tabulated value and use accurate wording.\\
-Simulation versus hardware & Saved circuits and selected simulation observations exist; complete bench readings do not. & Add measured data before asserting final full-band accuracy.\\
-Permitted ICs & Brief restricts IC use; supply contains fixed regulator ICs. & Confirm the project's approved power-supply exception.\\
-\bottomrule
-\end{longtable}
-
-The most direct schematic check for the multiplier is to trace the signal on IC4 pin~7, labelled \texttt{V\_\allowbreak{}gill\_\allowbreak{}sub}. In the supplied archive, the network around pins~5 and~6 uses the original external arithmetic input nets. Its nominal output is therefore $v_1-v_2$, followed by the gain set by VR1 and R31. A product measurement on the assembled board would indicate that the physical wiring or another revision differs from this archived connection and should be documented accordingly.
-
-\subsection{Information to Complete Before Submission}
-\begin{itemize}
-\item Actual group number and submission date.
-\item Each member's actual individual contribution and any specific acknowledgment names.
-\item Loaded supply voltages, current, ripple, and thermal observations.
-\item Final amplitude, phase, gain, drift, and multiplier-calibration readings with test conditions.
-\item Confirmation of the final multiplier connections, manufactured stack, fitted parts, and potentiometer resistances.
-\item Final enclosure units, material, manufacturing process, fasteners, and fit confirmation.
-\item Genuine breadboard and final-PCB photographs, if required by the module.
-\item Complete fabrication and assembly output files and any recorded approval for the power-supply regulator exception.
-\end{itemize}
-These entries concern information absent from the supplied material. They should be completed from the team's records rather than estimated from the senior report or replaced with calculated examples.
-
-\clearpage
-\section{Calculation and Test-Recording Aids}
-\subsection{Reference Relationships}
-\begin{table}[H]
-\centering\small
-\caption{Main reference equations for analysis and verification.}
-\begin{tabularx}{\textwidth}{P{0.30\textwidth}Y}
-\toprule\textbf{Function} & \textbf{Reference relationship}\\\midrule
-Unity-weight adder & $v_o=v_1+v_2$ under the equal-ratio conditions.\\
-Unity subtractor & $v_o=v_1-v_2$ under the balanced-ratio conditions.\\
-Intended multiplier & $v_o=K_m v_1v_2$ after recovery-path verification and scale calibration.\\
-Approximate differentiator & $v_o=-R_FC_D\,dv_i/dt$ sufficiently below both poles.\\
-Approximate integrator & $v_o=v_o(t_0)-(R_IC_I)^{-1}\int_{t_0}^t v_i\,dt$ in its integration region.\\
-Practical gain stage & $A_v=1+R_F/R_G$.\\
-Reservoir ripple & $\Delta V_{\mathrm{pp}}\approx I/(2f_{\mathrm{mains}}C_B)$.\\
-Regulator dissipation & $P\approx(|V_{\mathrm{raw}}|-|V_o|)I$.\\
-Sine-wave slew requirement & $\mathrm{SR}\geq2\pi fV_P$.\\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-\subsection{Measurement Log Template}
-The fields below can be duplicated for each operation and range. They are intentionally unfilled because no corresponding readings were supplied.
-\begin{table}[H]
-\centering\small
-\begin{tabularx}{\textwidth}{P{0.42\textwidth}Y}
-\toprule\textbf{Field} & \textbf{Value to record}\\\midrule
-Date, operator, and PCB revision & \notrecorded\\
-Operation and switch positions & \notrecorded\\
-Input waveform and frequency/frequencies & \notrecorded\\
-Input amplitude(s), convention, and DC offset(s) & \notrecorded\\
-Capacitor setting and measured control resistance & \notrecorded\\
-Positive/negative supply and test load & \notrecorded\\
-Instrument model, probe factor, and termination & \notrecorded\\
-Theoretical output using the actual settings & To be calculated from recorded inputs.\\
-Measured output amplitude, mean, and phase & \notrecorded\\
-Residual, distortion, drift, and uncertainty & \notrecorded\\
-Associated waveform file or photograph & \notrecorded\\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-\section{Separately Supplied Figures}
-All image inclusion commands in this source are commented out. The compiled report therefore contains no embedded images and requires no figure files to compile. The separate image collection contains an explanatory system diagram, reconstructed schematic views, a PCB component-origin plot, renders of actual enclosure meshes, and two original repository screenshots.
-
-The schematic images are reconstructions from native Altium drawing records, not screenshots exported by Altium. The PCB image shows component origins and the board outline, not copper artwork or fabrication clearance. The enclosure renders show the actual meshes, with no claim about the final manufactured material. The earlier differentiator screenshot remains labelled as exploratory simulation evidence. No senior-project images or substitute hardware photographs are included.
-
-% TODO: When genuine final hardware images are supplied, store them separately,
-% review their captions, and uncomment only the specific figure blocks wanted.
-% Do not enable all commented blocks blindly: university_logo.png,
-% breadboard_actual.jpg, and final_pcb_actual.jpg are NOT supplied assets.
 \end{document}
