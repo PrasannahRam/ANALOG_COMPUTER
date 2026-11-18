@@ -642,10 +642,20 @@ Breadboards introduce long connection loops, contact uncertainty, and parasitic 
 
 \subsection{Final PCB Implementation}
 
-The team reports that the final circuits were implemented on a PCB following breadboard testing. The supplied PCB and schematic files document that implementation stage. A physically assembled board, however, may contain component substitutions or corrected connections that are not reflected in an older project file. The IC4 multiplier-net issue and the recorded layer-stack discrepancy therefore require comparison with the actual built board.
-
-A suitable final inspection records solder-joint condition, connector polarity, continuity of power and ground, regulator output under load, quiescent supply current, and the absence of unintended shorts. Signal tests should then be repeated using the same settings as the breadboard comparisons. Such a sequence supports a defensible comparison of simulation, prototype, and PCB behaviour.
-
+\begin{minipage}[t]{0.45\textwidth}
+    \vspace{0pt}
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/PCB_Before.png}
+    \captionof{figure}{Final PCB Before Soldering}
+    \label{fig:PCB_Before}
+\end{minipage}\hfill%
+\begin{minipage}[t]{0.45\textwidth}
+    \vspace{0pt}
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/PCB_Before.png}
+    \captionof{figure}{Final PCB After Soldering}
+    \label{fig:PCB_After}
+\end{minipage}
 
 \subsection{Discussion of Accuracy and Practical Limitations}
 The operating range must be specified together with amplitude and error limits. Op-amp bandwidth alone cannot establish system accuracy: differential-pair linearity constrains multiplication, capacitor selection changes calculus scaling, and feedback controls alter pole positions. Resistor matching controls subtraction error, while capacitor tolerance directly changes the integration and differentiation constants.
