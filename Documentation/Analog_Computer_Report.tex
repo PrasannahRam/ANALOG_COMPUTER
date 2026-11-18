@@ -294,7 +294,7 @@ v_{\mathrm{mul}}(t)=\frac{K_mAB}{2}
 
 \subsection{Differentiator Circuit}
 
-The differentiator stage is an active inverting op-amp circuit that built around a NE5532P (U1B). A switched bank of input capacitors selects one of four operating bands, so the output stays within the op-amp's linear range across the full $1\,\text{Hz}$--$10\,\text{kHz}$ input range. Figure~\ref{fig:differentiator} shows the circuit as simulated.
+The differentiator stage is an active inverting op-amp circuit that built around a NE5532P (U1A). A switched bank of input capacitors selects one of four operating bands, so the output stays within the op-amp's linear range across the full $1\,\text{Hz}$--$10\,\text{kHz}$ input range. Figure~\ref{fig:differentiator} shows the circuit as simulated.
 
 \begin{figure}[htbp]
 	\centering
@@ -368,7 +368,7 @@ The resulting output equation in each mode is:
 
 \subsubsection{Component Justification}
 \begin{enumerate}
-	\item \textbf{Op-amp (U1B -- NE5532P):} its $10\,\text{MHz}$ gain-bandwidth product, $5\,\text{nV}/\sqrt{\text{Hz}}$ noise and $9\,\text{V}/\mu\text{s}$ slew rate let it follow steep slopes up to $10\,\text{kHz}$ without distortion.
+	\item \textbf{Op-amp (U1A -- NE5532P):} its $10\,\text{MHz}$ gain-bandwidth product, $5\,\text{nV}/\sqrt{\text{Hz}}$ noise and $9\,\text{V}/\mu\text{s}$ slew rate let it follow steep slopes up to $10\,\text{kHz}$ without distortion.
 	\item \textbf{Band capacitors ($C_1, C_5, C_4, C_2$):} $1\,\mu\text{F}$, $100\,\text{nF}$, $10\,\text{nF}$ and $1\,\text{nF}$ set $\tau = R_fC_{in}$ for each band, keeping the gain between $0.063$ and $6.28\,\text{V/V}$ so the output does not saturate.
 	\item \textbf{Input resistor ($R_2$, $R_6$):} a series resistor ($1$--$10\,\text{k}\Omega$) limits the high-frequency gain to $A_{max} = R_1/R_{in}$ and adds a corner at $f_c = \frac{1}{2\pi R_{in}C_{in}}$, which prevents oscillation and damps noise.
 	\item \textbf{Feedback network ($R_1$, $C_6$):} $R_1 = 100\,\text{k}\Omega$ sets the scaling $v_{out} = -R_1C_{in}\,\frac{dv_{in}}{dt}$, and $C_6 = 150\,\text{pF}$ forms a low-pass pole at $f_p = \frac{1}{2\pi R_1 C_6} \approx 10.61\,\text{kHz}$ that suppresses noise and ringing.
