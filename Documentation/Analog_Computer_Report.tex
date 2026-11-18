@@ -293,115 +293,198 @@ v_{\mathrm{mul}}(t)=\frac{K_mAB}{2}
 \end{equation}
 
 \subsection{Differentiator Circuit}
-\subsubsection{Practical Transfer Function}
-The first channel of IC5 implements an inverting differentiator. S4 selects the input capacitance, VR2 provides adjustable series resistance, R34~=~100~\kohm\ supplies feedback, and C25~=~22~pF is connected in parallel with R34. R33~=~100~\kohm\ connects the non-inverting input to ground and approximately balances the DC resistance seen by the amplifier inputs.
 
-Let $C_D$ be the selected input capacitance, $R_D$ the effective series resistance including the control and source resistance, $R_F=100$~\kohm, and $C_F=22$~pF. Then
-\begin{equation}
-Z_{\mathrm{in}}=R_D+\frac{1}{sC_D},\qquad
-Z_F=\frac{R_F}{1+sR_FC_F}.
-\end{equation}
-The practical transfer function is
-\begin{equation}
-\boxed{H_D(s)=-\frac{sR_FC_D}{(1+sR_DC_D)(1+sR_FC_F)}.}
-\label{eq:diffpractical}
-\end{equation}
-When both denominator time-constant terms are small compared with unity,
-\begin{equation}
-v_D(t)\approx-K_D\frac{dv_{\mathrm{in}}(t)}{dt},\qquad K_D=R_FC_D.
-\end{equation}
-The two pole frequencies are
-\begin{equation}
-f_{p1}=\frac{1}{2\pi R_DC_D},\qquad
-f_{p2}=\frac{1}{2\pi R_FC_F}.
-\end{equation}
-For the supplied feedback values, $f_{p2}\approx72.3$~kHz. This is the pole of the feedback network; it is not, by itself, a measured system bandwidth.
+The differentiator stage is an active inverting op-amp circuit that built around a NE5532P (U1B). A switched bank of input capacitors selects one of four operating bands, so the output stays within the op-amp's linear range across the full $1\,\text{Hz}$--$10\,\text{kHz}$ input range. Figure~\ref{fig:differentiator} shows the circuit as simulated.
 
-\subsubsection{Switched Ranges and Scaling Constants}
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.85\textwidth]{screenshots/differentiator_1.png}
+	\caption{Active differentiator circuit simulation.}
+	\label{fig:differentiator}
+\end{figure}
+
+\subsubsection{Transfer Function and Constant Derivation}
+
+For a practical op-amp differentiator with input resistor $R_{in}$, input capacitor $C_{in}$, feedback resistor $R_f$ and parallel feedback capacitor $C_f$, the impedances are
+\begin{equation}
+	Z_{in}(s) = R_{in} + \frac{1}{sC_{in}} = \frac{1 + sR_{in}C_{in}}{sC_{in}},
+\end{equation}
+\begin{equation}
+	Z_f(s) = R_f \parallel \frac{1}{sC_f} = \frac{R_f}{1 + sR_fC_f}.
+\end{equation}
+Using the inverting configuration gain $H(s) = -Z_f(s)/Z_{in}(s)$, the transfer function is
+\begin{equation}
+	H_{diff}(s) = -\frac{sR_fC_{in}}{(1 + sR_{in}C_{in})(1 + sR_fC_f)}.
+	\label{eq:diff_tf}
+\end{equation}
+
+Within the operating band, where $f \ll \frac{1}{2\pi R_{in}C_{in}}$ and $f \ll \frac{1}{2\pi R_fC_f}$, both pole terms are approximately $1$ and Equation~\eqref{eq:diff_tf} reduces to
+\begin{equation}
+	H_{diff}(s) \approx -s\,(R_fC_{in}).
+\end{equation}
+Taking the inverse Laplace transform gives the time-domain relation
+\begin{equation}
+	v_{out}(t) = -K\,\frac{dv_{in}(t)}{dt}, \qquad K = R_fC_{in}\ [\text{s}],
+	\label{eq:diff_time}
+\end{equation}
+where $K$ is the differentiation scaling constant. Since the output is DC-coupled, $H_{out}(s) = 1$ and the overall system transfer function equals $H_{diff}(s)$.
+
+\subsubsection{Frequency Band Specifications}
+\begin{itemize}
+	\item \textbf{Operating range:} DC to $10\,\text{kHz}$.
+	\item \textbf{Lower cutoff frequency ($f_L$):} $0\,\text{Hz}$ (DC-coupled output).
+	\item \textbf{Upper cutoff frequency ($f_H$):} set by the feedback network ($R_1$, $C_6$):
+\end{itemize}
+\begin{equation}
+	f_H = \frac{1}{2\pi R_1 C_6} = \frac{1}{2\pi\,(100\,\text{k}\Omega)(150\,\text{pF})} \approx 10.61\,\text{kHz} \approx 10\,\text{kHz}.
+\end{equation}
+
+\subsubsection{Switch-Wise Scaling Factors and Output Equations}
+
+With $R_f = R_1 = 100\,\text{k}\Omega$, each switch position selects one capacitor and therefore one value of $K$, as listed in Table~\ref{tab:diff_scaling}.
+
 \begin{table}[htbp]
-\centering\small
-\caption{Differentiator input-capacitance settings and nominal scaling.}
-\begin{tabularx}{\textwidth}{llllY}
-\toprule
-\textbf{Reference} & \textbf{Capacitance} & \boldmath$K_D$ & \textbf{Intended band} & \textbf{Ideal gain across band}\\
-\midrule
-C21 & 1~\uF & 0.1~s & 1--5~Hz & 0.628--3.142\\
-C22 & 100~nF & 0.01~s & 5--10~Hz & 0.314--0.628\\
-C23 & 10~nF & 0.001~s & 10~Hz--1~kHz & 0.0628--6.283\\
-C24 & 1~nF & 0.0001~s & 1--10~kHz & 0.628--6.283\\
-\bottomrule
-\end{tabularx}
-\label{tab:diffranges}
+	\centering
+	\caption{Scaling factor $K = R_fC_{in}$ for each switch position.}
+	\label{tab:diff_scaling}
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		\textbf{Switch} & \textbf{Band} & $\bm{C_{in}}$ & \textbf{Calculation} & $\bm{K}$ \\
+		\hline
+		4 & $1$--$5\,\text{Hz}$ & $C_1 = 1\,\mu\text{F}$ & $100\,\text{k}\Omega \times 1\,\mu\text{F}$ & $0.1\,\text{s}$ \\ \hline
+		3 & $5$--$10\,\text{Hz}$ & $C_5 = 100\,\text{nF}$ & $100\,\text{k}\Omega \times 100\,\text{nF}$ & $0.01\,\text{s}$ \\ \hline
+		2 & $10\,\text{Hz}$--$1\,\text{kHz}$ & $C_4 = 10\,\text{nF}$ & $100\,\text{k}\Omega \times 10\,\text{nF}$ & $1\,\text{ms}$ \\ \hline
+		1 & $1$--$10\,\text{kHz}$ & $C_2 = 1\,\text{nF}$ & $100\,\text{k}\Omega \times 1\,\text{nF}$ & $100\,\mu\text{s}$ \\ \hline
+	\end{tabular}
 \end{table}
-The band assignments follow the development notes, while the capacitances agree with the supplied Altium design. The ideal magnitude is $2\pi fK_D$. It varies with frequency and should not be mistaken for a constant gain over a selected band. Only one capacitor branch should be enabled when using the tabulated constants. If multiple branches are closed, the parallel capacitances add and change $K_D$.
 
-The ideal approximation must be checked against \eqref{eq:diffpractical}. For example, $R_D=1$~\kohm\ and $C_D=1$~nF give an input pole near 159~kHz. At 10~kHz, the two pole factors reduce the ideal magnitude by about 1.1\% and introduce roughly $11.5^\circ$ of additional phase lag. With $R_D=10$~\kohm, the input pole falls to approximately 15.9~kHz and the magnitude reduction at 10~kHz is about 16\%. These are calculated examples that explain the trade-off between damping and differentiation accuracy.
+The resulting output equation in each mode is:
+\begin{align}
+	\text{Band 1 (Switch 4):}\quad & v_{out}(t) = -0.1\,\frac{dv_{in}(t)}{dt}, \\
+	\text{Band 2 (Switch 3):}\quad & v_{out}(t) = -0.01\,\frac{dv_{in}(t)}{dt}, \\
+	\text{Band 3 (Switch 2):}\quad & v_{out}(t) = -0.001\,\frac{dv_{in}(t)}{dt}, \\
+	\text{Band 4 (Switch 1):}\quad & v_{out}(t) = -0.0001\,\frac{dv_{in}(t)}{dt}.
+\end{align}
 
-An older simulation uses $C_F=150$~pF, placing the feedback pole near 10.6~kHz. At 10~kHz, this pole alone has a magnitude factor of approximately 0.728; therefore, it is not appropriate to assume ideal differentiation throughout that range. The supplied design's 22~pF value must be used for its own calculations.
+\subsubsection{Component Justification}
 
-\subsubsection{Waveform Behaviour and Control Adjustment}
-A sinusoidal input ideally produces a scaled cosine with inversion. A triangular input produces approximately constant output levels on its positive and negative slopes, while a square-wave input produces finite pulses at its edges. Practical pulse width and amplitude are limited by the series resistance, compensation, signal rise time, and op-amp response.
+\paragraph{Active element (U1B -- NE5532P).}
+An ideal differentiator needs high bandwidth and slew rate to process steep slopes ($dV/dt$) without slew-rate limiting or phase distortion. The NE5532 offers a gain-bandwidth product of $10\,\text{MHz}$, low input noise of $5\,\text{nV}/\sqrt{\text{Hz}}$ and a slew rate of $9\,\text{V}/\mu\text{s}$, which suits signals up to $10\,\text{kHz}$.
 
-The development note advises increasing series resistance when edge spikes are excessive and reducing it when the differentiated waveform becomes too rounded. This reflects the trade-off in \eqref{eq:diffpractical}: greater resistance limits high-frequency response, while lower resistance retains more slope information and can expose ringing or noise. The optimum control setting depends on the selected capacitance and input waveform.
+\paragraph{Switched band capacitors ($C_1, C_5, C_4, C_2$).}
+These set the time constant $\tau = R_fC_{in}$ for each band.
+\begin{itemize}
+	\item $C_1 = 1\,\mu\text{F}$ ($1$--$5\,\text{Hz}$): at very low frequencies $dV/dt$ is small, so a large capacitance supplies enough input current for a readable output (gain $0.63$ to $3.14\,\text{V/V}$ across $R_1 = 100\,\text{k}\Omega$).
+	\item $C_5 = 100\,\text{nF}$ ($5$--$10\,\text{Hz}$): scaled down $10\times$ from $C_1$ to offset the higher frequency range, keeping the maximum band gain at $0.63\,\text{V/V}$.
+	\item $C_4 = 10\,\text{nF}$ ($10\,\text{Hz}$--$1\,\text{kHz}$): covers two decades, with gain bounded between $0.063$ and $6.28\,\text{V/V}$, which prevents output saturation.
+	\item $C_2 = 1\,\text{nF}$ ($1$--$10\,\text{kHz}$): at high frequencies $dV/dt$ is large, so a small capacitor keeps the gain between $0.63$ and $6.28\,\text{V/V}$ and limits high-frequency noise amplification.
+\end{itemize}
 
-The supplied differentiator file and final-style screenshot are DC-coupled at the output. An earlier Multisim variant contains a 470~\uF\ output capacitor and a 100~\kohm\ load. That earlier network has an approximate high-pass corner of 0.00339~Hz, but it is not included in the final DC-coupled transfer function. A differentiator has zero steady-state response to a constant input; DC coupling alone does not imply a finite nonzero DC differentiation gain.
+\paragraph{Stability and input resistance ($R_2$, $R_6$).}
+An ideal differentiator has zero input resistance, which gives unbounded high-frequency gain and risks self-oscillation. A series input resistor limits the maximum high-frequency gain to $A_{max} = R_1/R_{in}$ and adds a corner at $f_c = \frac{1}{2\pi R_{in}C_{in}}$. This stabilises the feedback loop and damps high-frequency noise. $R_6$ is chosen in the range $1$--$10\,\text{k}\Omega$.
 
-% OPTIONAL FIGURE: original repository image, supplied separately.
-% \begin{figure}[htbp]
-% \centering\includegraphics[width=\textwidth]{figures/09_differentiator_multisim_schematic.png}
-% \caption{Retained Multisim differentiator schematic showing switched input capacitors and 22 pF compensation.}
-% \end{figure}
+\paragraph{Feedback network ($R_1$, $C_6$).}
+The feedback resistor $R_1 = 100\,\text{k}\Omega$ sets the scaling, $v_{out} = -R_1C_{in}\,\frac{dv_{in}}{dt}$. This value gives high transimpedance gain without bulky input capacitors and keeps the load current within the NE5532's drive limit. The feedback capacitor $C_6 = 150\,\text{pF}$ sits in parallel with $R_1$ and forms a low-pass pole at
+\begin{equation}
+	f_p = \frac{1}{2\pi R_1 C_6} \approx 10.61\,\text{kHz},
+\end{equation}
+which rolls off gain beyond the target bandwidth and suppresses noise and ringing.
+
+\paragraph{DC compensation and output ($R_3$).}
+The bias resistor $R_3 = 100\,\text{k}\Omega$ matches the DC source resistance seen at the non-inverting terminal to that at the inverting terminal ($R_3 = R_1$), which cancels offset caused by the input bias currents. The output is DC-coupled directly to the load or oscilloscope, which avoids the phase shift and low-frequency attenuation of AC coupling and allows accurate differentiation at low frequencies.
 
 \subsection{Integrator Circuit}
-The second IC5 channel implements a practical inverting integrator. R37~=~10~\kohm\ is the input resistor, and S5 selects the feedback capacitance. VR3 provides an adjustable resistance in parallel with the selected capacitor. R36~=~10~\kohm\ connects the non-inverting input to ground.
+The integrator stage is an active inverting op-amp circuit built around an NE5532P (U1B). A switched bank of feedback capacitors selects one of four operating bands, so the output stays within the op-amp's linear range across the full $1\,\text{Hz}$--$10\,\text{kHz}$ input range. Figure~\ref{fig:integrator} shows the circuit as simulated.
 
-For input resistance $R_I$, selected capacitance $C_I$, and feedback leakage resistance $R_L$,
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.85\textwidth]{Integrator.jpeg}
+	\caption{Active integrator circuit simulation.}
+	\label{fig:integrator}
+\end{figure}
+
+\subsubsection{Transfer Function and Constant Derivation}
+
+For a practical active op-amp integrator with input resistor $R_{in}$, feedback capacitor $C_f$ and parallel feedback resistor $R_f$, the impedances are
 \begin{equation}
-Z_F=\frac{R_L}{1+sR_LC_I}.
+	Z_{in}(s) = R_{in},
 \end{equation}
-The transfer function is
 \begin{equation}
-\boxed{H_I(s)=-\frac{R_L/R_I}{1+sR_LC_I}.}
-\label{eq:integratorpractical}
+	Z_f(s) = R_f \parallel \frac{1}{sC_f} = \frac{R_f}{1 + sR_fC_f}.
 \end{equation}
-At frequencies sufficiently above $f_L=1/(2\pi R_LC_I)$,
+Using the inverting configuration gain $H(s) = -Z_f(s)/Z_{in}(s)$, the transfer function is
 \begin{equation}
-H_I(s)\approx-\frac{1}{sR_IC_I},
+	H_{int}(s) = -\frac{R_f}{R_{in}}\cdot\frac{1}{1 + sR_fC_f}.
+	\label{eq:int_tf}
 \end{equation}
-which corresponds to
+
+Within the integration region, where $f \gg \frac{1}{2\pi R_fC_f}$, the denominator of Equation~\eqref{eq:int_tf} is approximated as $1 + sR_fC_f \approx sR_fC_f$, so the transfer function simplifies to
 \begin{equation}
-v_I(t)=v_I(t_0)-\frac{1}{R_IC_I}\int_{t_0}^{t}v_{\mathrm{in}}(\tau)\,d\tau.
-\label{eq:integratortime}
+	H_{int}(s) \approx -\frac{1}{sR_{in}C_f}.
 \end{equation}
-The initial condition is set by the capacitor voltage at $t_0$. The leakage path bounds DC gain and reduces uncontrolled drift, although it also causes departures from ideal integration near and below $f_L$.
+Taking the inverse Laplace transform gives the time-domain relation
+\begin{equation}
+	v_{out}(t) = -\frac{1}{\tau}\int v_{in}(t)\,dt, \qquad \tau = R_{in}C_f\ [\text{s}],
+	\label{eq:int_time}
+\end{equation}
+where $\tau$ is the integration time constant. Since the output is DC-coupled, there is no additional output filtering or coupling network, so $H_{out}(s) = 1$ and the overall system transfer function equals $H_{int}(s)$.
+
+\subsubsection{Frequency Band Specifications}
+\begin{itemize}
+	\item \textbf{Operating range:} $1\,\text{Hz}$ to $10\,\text{kHz}$.
+	\item \textbf{Lower cutoff frequency ($f_L$):} set by the feedback network ($R_4$, $C_f$). Integration is valid only for frequencies well above
+\end{itemize}
+\begin{equation}
+	f_L = \frac{1}{2\pi R_4 C_f}.
+\end{equation}
+For example, with $R_4 = 500\,\text{k}\Omega$ and $C_f = C_4 = 10\,\mu\text{F}$, $f_L \approx 0.032\,\text{Hz}$.
+
+\subsubsection{Switch-Wise Frequency Range Support}
+
+With $R_{in} = R_3 = 10\,\text{k}\Omega$, each switch position selects one feedback capacitor and therefore one time constant $\tau$, as listed in Table~\ref{tab:int_scaling}.
 
 \begin{table}[htbp]
-\centering\small
-\caption{Integrator capacitance settings with $R_I=10$~\kohm. The last column assumes $R_L=100$~\kohm\ for calculation only.}
-\begin{tabular}{lllll}
-\toprule
-\textbf{Reference} & \boldmath$C_I$ & \boldmath$R_IC_I$ & \boldmath$1/(R_IC_I)$ & \boldmath$f_L$\\
-\midrule
-C26 & 47~\uF & 0.47~s & 2.128~s$^{-1}$ & 0.0339~Hz\\
-C27 & 4.7~\uF & 0.047~s & 21.28~s$^{-1}$ & 0.339~Hz\\
-C28 & 470~nF & 0.0047~s & 212.8~s$^{-1}$ & 3.39~Hz\\
-C29 & 47~nF & 0.00047~s & 2128~s$^{-1}$ & 33.9~Hz\\
-\bottomrule
-\end{tabular}
+	\centering
+	\caption{Time constant $\tau = R_{in}C_f$ for each switch position.}
+	\label{tab:int_scaling}
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		\textbf{Switch} & \textbf{Band} & $\bm{C_f}$ & \textbf{Calculation} & $\bm{\tau}$ \\
+		\hline
+		4 & $1$--$10\,\text{Hz}$ & $C_4 = 10\,\mu\text{F}$ & $10\,\text{k}\Omega \times 10\,\mu\text{F}$ & $100\,\text{ms}$ \\ \hline
+		3 & $10$--$100\,\text{Hz}$ & $C_3 = 1\,\mu\text{F}$ & $10\,\text{k}\Omega \times 1\,\mu\text{F}$ & $10\,\text{ms}$ \\ \hline
+		2 & $100\,\text{Hz}$--$1\,\text{kHz}$ & $C_2 = 100\,\text{nF}$ & $10\,\text{k}\Omega \times 100\,\text{nF}$ & $1\,\text{ms}$ \\ \hline
+		1 & $1$--$10\,\text{kHz}$ & $C_1 = 10\,\text{nF}$ & $10\,\text{k}\Omega \times 10\,\text{nF}$ & $0.1\,\text{ms}$ \\ \hline
+	\end{tabular}
 \end{table}
 
-The Multisim integrator records a 100~\kohm\ adjustable feedback element, but the Altium VR3 comment contains its mechanical part identifier rather than a resistance. The assumed 100~\kohm\ value in the table must therefore be checked against the installed potentiometer and its actual setting.
+\subsubsection{Resulting Output Equations for Each Mode}
+\begin{align}
+	\text{Band 1 ($1$--$10\,\text{Hz}$, Switch 4):}\quad & v_{out}(t) = -10\int v_{in}(t)\,dt, \\
+	\text{Band 2 ($10$--$100\,\text{Hz}$, Switch 3):}\quad & v_{out}(t) = -100\int v_{in}(t)\,dt, \\
+	\text{Band 3 ($100\,\text{Hz}$--$1\,\text{kHz}$, Switch 2):}\quad & v_{out}(t) = -1000\int v_{in}(t)\,dt, \\
+	\text{Band 4 ($1$--$10\,\text{kHz}$, Switch 1):}\quad & v_{out}(t) = -10000\int v_{in}(t)\,dt.
+\end{align}
 
-A square-wave input ideally produces a triangular output, while a sinusoidal input produces a scaled cosine. The ideal sinusoidal magnitude is $1/(2\pi fR_IC_I)$. For example, a 1~V peak sine at 1~kHz with 47~nF selected gives approximately 0.339~V peak. At 1~Hz with 47~\uF\ selected, the corresponding ideal magnitude is also approximately 0.339. These values are predictions, not bench measurements.
+\subsubsection{Component Justification}
 
-A DC offset introduces a ramp term in an ideal integrator. With a 10~mV input offset and $R_IC_I=0.47$~s, the initial ideal ramp magnitude is approximately 21.3~mV/s. The practical feedback resistor eventually limits this response. Careful input zeroing, appropriate range selection, and a defined initial capacitor state improve repeatability. A dedicated reset switch is a useful future addition; it is not confirmed in the supplied schematic.
+\paragraph{Active element (U1B -- NE5532P).}
+An active integrator needs an op-amp with sufficient open-loop gain, gain-bandwidth product and slew rate to integrate input signals without excessive waveform distortion. The NE5532 offers a gain-bandwidth product of $10\,\text{MHz}$, low input noise of $5\,\text{nV}/\sqrt{\text{Hz}}$ and a slew rate of $9\,\text{V}/\mu\text{s}$, which suits integration over the intended operating range. Its low input offset voltage also helps minimise output drift during integration.
 
-% OPTIONAL FIGURE: reconstructed from the native schematic.
-% \begin{figure}[p]
-% \centering\includegraphics[width=\textwidth]{figures/04_calculus_schematic.pdf}
-% \caption{Switched differentiator, integrator, and output selectors from the supplied design.}
-% \end{figure}
+\paragraph{Switched band capacitors ($C_1, C_2, C_3, C_4$).}
+These feedback capacitors set the time constant $\tau = R_{in}C_f$ and control the integration rate in each mode.
+\begin{itemize}
+	\item $C_1 = 10\,\text{nF}$: gives the smallest time constant ($0.1\,\text{ms}$). The low capacitance gives a faster integration response and a larger output variation for a given input signal.
+	\item $C_2 = 100\,\text{nF}$: raises the time constant to $1\,\text{ms}$, which reduces the output variation compared with $C_1$ and gives a more moderate integration response.
+	\item $C_3 = 1\,\mu\text{F}$: gives a time constant of $10\,\text{ms}$. The larger capacitance lowers the integration rate, which suits applications needing slower output variations.
+	\item $C_4 = 10\,\mu\text{F}$: gives the largest time constant ($100\,\text{ms}$). Its high capacitance produces the slowest integration response and the smallest output variation for a given input signal, allowing longer integration periods.
+\end{itemize}
 
+\paragraph{Stability and input resistance ($R_3$, $R_4$).}
+$R_3 = 10\,\text{k}\Omega$ acts as the input resistor. It limits the current into the inverting input and, together with the selected feedback capacitor, sets the time constant $\tau = R_3C_f$. $R_4 = 500\,\text{k}\Omega$ is an adjustable potentiometer in parallel with the selected feedback capacitor. It provides a DC feedback path that limits the low-frequency gain to $R_4/R_3$ and reduces output drift caused by input offset voltage and bias currents. Its adjustable value also allows control of the low-frequency response, which improves the practical stability of the integrator and prevents output saturation.
+
+\paragraph{DC compensation and output ($R_1$).}
+The bias resistor $R_1 = 10\,\text{k}\Omega$ provides a DC bias-current compensation path at the non-inverting input of the NE5532. It balances the resistance seen by the inverting and non-inverting terminals, which reduces the output offset voltage caused by input bias currents and improves the DC stability of the integrator. The output is DC-coupled directly to the load or oscilloscope, which avoids the low-frequency attenuation and phase shift of output coupling capacitors and lets the integrated waveform be observed without extra output-stage filtering.
 \subsection{Gain-Control and Output-Selection Circuits}
 IC6 contains two non-inverting input amplifiers. R38 and R39 are each 1~\kohm, while VR4 and VR5 form the respective variable feedback resistances. Their ideal gains are
 \begin{equation}

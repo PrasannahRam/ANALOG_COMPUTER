@@ -56,8 +56,6 @@ Gerber/
 NC/
 Pick and Place/
 
-# Draftsman generated output
-*.pdf
 
 # Altium compiled / cache files
 *.PrjPcbStructure
@@ -164,3 +162,77 @@ logs/
 
 ## Multisim ===========================================
 *.ms14 (Security copy)
+
+# ---- LaTeX auxiliary files ----
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.synctex(busy)
+*.nav
+*.snm
+*.vrb
+*.dvi
+*.xdv
+
+# ---- Bibliography (BibTeX / Biber) ----
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+*-blx.bib
+
+# ---- Index and glossary ----
+*.idx
+*.ilg
+*.ind
+*.glo
+*.gls
+*.glg
+*.acn
+*.acr
+*.alg
+*.ist
+
+# ---- Package-generated files ----
+*.fmt
+*.nlo
+*.nls
+*.mw
+*.pyg
+*.thm
+*.auxlock
+*.figlist
+*.makefile
+*.figlist
+*.markdown.in
+_minted*
+*.listing
+*.cut
+*.ptc
+*.tdo
+*.xcp
+*.xyc
+
+# ---- Editor / OS junk ----
+*.swp
+*~
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+.texpadtmp
+*.bak
+*.sav
+
+# ---- Build output folders ----
+build/
+out/
+_build/
