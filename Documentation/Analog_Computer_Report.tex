@@ -94,35 +94,7 @@ The development process comprised theoretical analysis, LTspice and Multisim sim
 \end{abstract}
 \clearpage
 
-\section*{Abbreviations and Acronyms}
-\addcontentsline{toc}{section}{Abbreviations and Acronyms}
-\begin{acronym}[MOSFET]
-\acro{AC}{alternating current}
-\acro{BJT}{bipolar junction transistor}
-\acro{BOM}{bill of materials}
-\acro{CAD}{computer-aided design}
-\acro{CMRR}{common-mode rejection ratio}
-\acro{DC}{direct current}
-\acro{DIP}{dual in-line package}
-\acro{DRC}{design rule check}
-\acro{ERC}{electrical rule check}
-\acro{ESR}{equivalent series resistance}
-\acro{GBW}{gain-bandwidth product}
-\acro{IC}{integrated circuit}
-\acro{KCL}{Kirchhoff's current law}
-\acro{PCB}{printed circuit board}
-\acro{RMS}{root mean square}
-\acro{RC}{resistor-capacitor}
-\acro{SMD}{surface-mount device}
-\acro{SOIC}{small-outline integrated circuit}
-\acro{SPDT}{single-pole double-throw}
-\acro{SPICE}{Simulation Program with Integrated Circuit Emphasis}
-\acro{SR}{slew rate}
-\acro{STEP}{Standard for the Exchange of Product Model Data}
-\acro{STL}{stereolithography mesh file format}
-\acro{THD}{total harmonic distortion}
-\end{acronym}
-\clearpage
+
 \tableofcontents
 \clearpage
 \pagenumbering{arabic}
@@ -145,11 +117,14 @@ This project was carried out as part of the EN2091 Laboratory Practice and Proje
     \item Document the design using Altium files, power-supply records, and enclosure models~\cite{repository,designfiles}; use the senior report only as a structural reference.
 \end{itemize}
 
-
-
-\newpage
 \section{System Architecture}
-\subsection{Functional Organization and Signal Interfaces}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.62\textwidth]{images/BlockDiagram.jpeg}
+    \caption{System Block Diagram}
+    \label{fig:BlockDiagram}
+\end{figure}
+\section{Functional Organization and Signal Interfaces}
 \subsection{Adder Circuit}
 
 
@@ -292,13 +267,14 @@ v_{\mathrm{mul}}(t)=\frac{K_mAB}{2}
 \left[\cos\bigl(2\pi(f_1-f_2)t\bigr)-\cos\bigl(2\pi(f_1+f_2)t\bigr)\right].
 \end{equation}
 
+
 \subsection{Differentiator Circuit}
 
 The differentiator stage is an active inverting op-amp circuit that built around a NE5532P (U1A). A switched bank of input capacitors selects one of four operating bands, so the output stays within the op-amp's linear range across the full $1\,\text{Hz}$--$10\,\text{kHz}$ input range. Figure~\ref{fig:differentiator} shows the circuit as simulated.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 	\centering
-	\includegraphics[width=0.85\textwidth]{images/differentiator_1.png}
+	\includegraphics[width=0.75\textwidth]{images/differentiator_1.png}
 	\caption{Active differentiator circuit simulation.}
 	\label{fig:differentiator}
 \end{figure}
@@ -358,28 +334,12 @@ With $R_f = R_1 = 100\,\text{k}\Omega$, each switch position selects one capacit
 	\end{tabular}
 \end{table}
 
-The resulting output equation in each mode is:
-\begin{align}
-	\text{Band 1 (Switch 4):}\quad & v_{out}(t) = -0.1\,\frac{dv_{in}(t)}{dt}, \\
-	\text{Band 2 (Switch 3):}\quad & v_{out}(t) = -0.01\,\frac{dv_{in}(t)}{dt}, \\
-	\text{Band 3 (Switch 2):}\quad & v_{out}(t) = -0.001\,\frac{dv_{in}(t)}{dt}, \\
-	\text{Band 4 (Switch 1):}\quad & v_{out}(t) = -0.0001\,\frac{dv_{in}(t)}{dt}.
-\end{align}
-
-\subsubsection{Component Justification}
-\begin{enumerate}
-	\item \textbf{Op-amp (U1A -- NE5532P):} its $10\,\text{MHz}$ gain-bandwidth product, $5\,\text{nV}/\sqrt{\text{Hz}}$ noise and $9\,\text{V}/\mu\text{s}$ slew rate let it follow steep slopes up to $10\,\text{kHz}$ without distortion.
-	\item \textbf{Band capacitors ($C_1, C_5, C_4, C_2$):} $1\,\mu\text{F}$, $100\,\text{nF}$, $10\,\text{nF}$ and $1\,\text{nF}$ set $\tau = R_fC_{in}$ for each band, keeping the gain between $0.063$ and $6.28\,\text{V/V}$ so the output does not saturate.
-	\item \textbf{Input resistor ($R_2$, $R_6$):} a series resistor ($1$--$10\,\text{k}\Omega$) limits the high-frequency gain to $A_{max} = R_1/R_{in}$ and adds a corner at $f_c = \frac{1}{2\pi R_{in}C_{in}}$, which prevents oscillation and damps noise.
-	\item \textbf{Feedback network ($R_1$, $C_6$):} $R_1 = 100\,\text{k}\Omega$ sets the scaling $v_{out} = -R_1C_{in}\,\frac{dv_{in}}{dt}$, and $C_6 = 150\,\text{pF}$ forms a low-pass pole at $f_p = \frac{1}{2\pi R_1 C_6} \approx 10.61\,\text{kHz}$ that suppresses noise and ringing.
-	\item \textbf{DC compensation and output ($R_3$):} $R_3 = R_1 = 100\,\text{k}\Omega$ balances the source resistance at both inputs to cancel bias-current offset, and the DC-coupled output avoids the phase shift and low-frequency loss of AC coupling.
-\end{enumerate}
 \subsection{Integrator Circuit}
 The integrator stage is an active inverting op-amp circuit built around an NE5532P (U1B). A switched bank of feedback capacitors selects one of four operating bands, so the output stays within the op-amp's linear range across the full $1\,\text{Hz}$--$10\,\text{kHz}$ input range. Figure~\ref{fig:integrator} shows the circuit as simulated.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 	\centering
-	\includegraphics[width=0.85\textwidth]{images/Integrator.jpeg}
+	\includegraphics[width=0.75\textwidth]{images/Integrator.jpeg}
 	\caption{Active integrator circuit simulation.}
 	\label{fig:integrator}
 \end{figure}
@@ -439,40 +399,9 @@ With $R_{in} = R_3 = 10\,\text{k}\Omega$, each switch position selects one feedb
 	\end{tabular}
 \end{table}
 
-\subsubsection{Resulting Output Equations for Each Mode}
-\begin{align}
-	\text{Band 1 ($1$--$10\,\text{Hz}$, Switch 4):}\quad & v_{out}(t) = -10\int v_{in}(t)\,dt, \\
-	\text{Band 2 ($10$--$100\,\text{Hz}$, Switch 3):}\quad & v_{out}(t) = -100\int v_{in}(t)\,dt, \\
-	\text{Band 3 ($100\,\text{Hz}$--$1\,\text{kHz}$, Switch 2):}\quad & v_{out}(t) = -1000\int v_{in}(t)\,dt, \\
-	\text{Band 4 ($1$--$10\,\text{kHz}$, Switch 1):}\quad & v_{out}(t) = -10000\int v_{in}(t)\,dt.
-\end{align}
 
-\subsubsection{Component Justification}
-\begin{enumerate}
-	\item \textbf{Op-amp (U1B -- NE5532P):} its $10\,\text{MHz}$ gain-bandwidth product, $5\,\text{nV}/\sqrt{\text{Hz}}$ noise and $9\,\text{V}/\mu\text{s}$ slew rate allow accurate integration without distortion, and its low input offset voltage reduces output drift.
-	\item \textbf{Band capacitors ($C_1, C_2, C_3, C_4$):} $10\,\text{nF}$, $100\,\text{nF}$, $1\,\mu\text{F}$ and $10\,\mu\text{F}$ set $\tau = R_{in}C_f$ to $0.1$, $1$, $10$ and $100\,\text{ms}$, so each band gets a suitable integration rate and output swing.
-	\item \textbf{Input resistor ($R_3$):} $R_3 = 10\,\text{k}\Omega$ limits the current into the inverting input and, with the selected capacitor, sets $\tau = R_3C_f$.
-	\item \textbf{Feedback potentiometer ($R_4$):} $R_4 = 500\,\text{k}\Omega$ in parallel with $C_f$ provides a DC feedback path that limits the low-frequency gain to $R_4/R_3$, reducing offset drift and preventing saturation.
-	\item \textbf{DC compensation and output ($R_1$):} $R_1 = 10\,\text{k}\Omega$ balances the resistance at both inputs to cancel bias-current offset, and the DC-coupled output avoids the phase shift and low-frequency loss of coupling capacitors.
-\end{enumerate}
-\subsection{Gain-Control and Output-Selection Circuits}
-IC6 contains two non-inverting input amplifiers. R38 and R39 are each 1~\kohm, while VR4 and VR5 form the respective variable feedback resistances. Their ideal gains are
-\begin{equation}
-A_{G1}=1+\frac{R_{\mathrm{VR4}}}{R_{38}},\qquad
-A_{G2}=1+\frac{R_{\mathrm{VR5}}}{R_{39}}.
-\end{equation}
-The nominal end-to-end potentiometer resistance must be obtained from the installed parts or a completed BOM. The model identifier WH148-1A-2-18T-L20 does not specify a unique resistance value in the supplied comments.
 
-The recorded IC6 inputs are \texttt{Vin\_\allowbreak{}3} and \texttt{Vin\_\allowbreak{}4}. Its outputs, \texttt{Gain\_\allowbreak{}1} and \texttt{Gain\_\allowbreak{}2}, feed alternate contacts of S2 and S3. Thus, these switches select either a calculus output or an amplified version of the corresponding original input. They do not, as currently drawn, put IC6 in series after the integrator or differentiator. R41 and R42, each 100~\kohm, provide output-to-ground references. R40 provides the corresponding 100~\kohm\ reference at the arithmetic output.
-
-The arithmetic selector S1 is an SS-13D01G5 device that routes one of three arithmetic outputs to \texttt{OUT\_\allowbreak{}1}. S2 and S3 are SS12D00G3 selector devices, while S4 and S5 are 204-4ST four-section switches. This manual selection is consistent with the hardware record. A CD4051 is mentioned in an older supply README but is absent from the supplied computational schematic and component population.
-
-% OPTIONAL FIGURE.
-% \begin{figure}[htbp]
-% \centering\includegraphics[width=\textwidth]{figures/05_gain_controller_schematic.pdf}
-% \caption{Two non-inverting input gain-control stages reconstructed from the supplied Altium sheet.}
-% \end{figure}
-
+\subsection{Gain-Control}
 
 \section{Component Selection}
 \subsection{NE5532 Operational Amplifiers}
@@ -534,26 +463,7 @@ The arithmetic selector S1 is an SS-13D01G5 device that routes one of three arit
 b		y keeping connecting traces short.
     \end{itemize}
 
-\subsection{Population Summary}
-\begin{table}[H]
-\centering
-\caption{Computational-board population recovered from the supplied PCB component records.}
-\begin{tabular}{lr}
-\toprule
-\textbf{Component category} & \textbf{Count}\\
-\midrule
-NE5532D dual op-amp packages & 6\\
-BC550C transistors & 6\\
-Fixed resistors & 40\\
-Capacitors: 21 ceramic-library, 4 coupling, 2 rail-entry & 27\\
-Potentiometers & 5\\
-External terminals & 13\\
-Switches: one arithmetic, two output, two range switches & 5\\
-\midrule
-\textbf{Total computational-board component instances} & \textbf{102}\\
-\bottomrule
-\end{tabular}
-\end{table}
+
 \section{PCB Design}
 \begin{minipage}[t]{0.5\textwidth}
     \vspace{0pt}
@@ -578,8 +488,52 @@ Input signals are supplied through four banana jacks. Two jacks provide the comm
 
 \section{Enclosure Design}
 
+\begin{minipage}[t]{0.48\textwidth}
+    \vspace{0pt}
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/Enclosure_Below.jpeg}
+    \captionof{figure}{Enclosure bottom view}
+    \label{fig:Enclosure_Below}
+\end{minipage}\hfill%
+\begin{minipage}[t]{0.48\textwidth}
+    \vspace{0pt}
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/Enclosure_top.jpeg}
+    \captionof{figure}{Enclosure top view}
+    \label{fig:Enclosure_Top}
+\end{minipage}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\textwidth]{images/Final.jpeg}
+    \caption{Final PCB Implementation}
+    \label{fig:FinalPCB}
+\end{figure}
 \section{Software Simulation and Hardware Testing}
 \subsection{Software Simulation}
+\begin{minipage}[t]{0.48\textwidth}
+    \vspace{0pt}
+    \centering
+    \includegraphics[width=\linewidth]{images/Diiferentiator_Sim.png}
+    \captionof{figure}{Differentiator simulation}
+    \label{fig:DiffSim}
+\end{minipage}\hfill%
+\begin{minipage}[t]{0.48\textwidth}
+    \vspace{0pt}
+    \centering
+    \includegraphics[width=\linewidth]{images/Integ sim.png}
+    \captionof{figure}{Integrator Simulation}
+    \label{fig:IntSim}
+\end{minipage}
+\begin{minipage}[t]{0.48\textwidth}
+    \vspace{0pt}
+    \centering
+    \includegraphics[width=\linewidth]{images/Multiplier_Sim.png}
+    \captionof{figure}{Multiplier Simulation}
+    \label{fig:MultSim}
+\end{minipage}\hfill%
+
+The simulation stage used Multisim to verify the circuit design and expected behaviour. The differentiator, integrator, and multiplier circuits were simulated with representative input signals, and the output waveforms were compared to theoretical expectations. The simulations confirmed that the circuits operated correctly within the specified frequency range and provided the expected mathematical operations on the input signals.
+
 
 \subsection{Breadboard Implementation and Testing}
 
@@ -593,7 +547,7 @@ Input signals are supplied through four banana jacks. Two jacks provide the comm
 \begin{minipage}[t]{0.45\textwidth}
     \vspace{0pt}
     \centering
-    \includegraphics[width=\linewidth]{images/integrator.jpeg}
+    \includegraphics[width=\linewidth]{images/B_int.jpeg}
     \captionof{figure}{Integrator circuit}
     \label{fig:integrator}
 \end{minipage}
@@ -606,7 +560,7 @@ Input signals are supplied through four banana jacks. Two jacks provide the comm
 
 
 
-The team constructed and tested breadboard prototypes after simulation. This stage provided the opportunity to inspect practical polarity, biasing, gain, clipping, and waveform behaviour before committing to the PCB.
+We constructed and tested breadboard prototypes after simulation. This stage provided the opportunity to inspect practical polarity, biasing, gain, clipping, and waveform behaviour before committing to the PCB.
 
 Breadboards introduce long connection loops, contact uncertainty, and parasitic capacitance. These effects are especially relevant to the differentiator and discrete multiplier. Short feedback paths, local bypassing, consistent grounding, and suitable signal amplitudes help separate circuit behaviour from the test setup.
 
@@ -626,6 +580,7 @@ Breadboards introduce long connection loops, contact uncertainty, and parasitic 
     \captionof{figure}{Final PCB After Soldering}
     \label{fig:PCB_After}
 \end{minipage}
+
 
 \subsection{Discussion of Accuracy and Practical Limitations}
 
