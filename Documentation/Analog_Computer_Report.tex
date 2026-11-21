@@ -83,14 +83,13 @@
 Submitted in partial fulfillment of the requirements for the module\par
 \textbf{EN 2091 Laboratory Practice and Projects}\par
 \vspace{1cm}
-{\large\ReportDate\par}
+{\large\today\par}
 \end{titlepage}
 
 \pagenumbering{roman}
 \begin{abstract}
 This project presents the design, simulation, and hardware implementation of an analog computer that performs mathematical operations directly on continuous voltage signals. The required functions are addition, subtraction, and multiplication, with integration and differentiation incorporated as additional features. The design targets input waveform frequencies from 1~Hz to 10~kHz. NE5532 operational amplifiers form the linear computational and signal-conditioning stages, while a discrete six-transistor Gilbert cell provides the multiplication core. Switched capacitor networks and adjustable resistances allow the calculus circuits to operate with suitable scaling over different frequency ranges. A separate regulated $\pm15$~V supply provides bipolar power to the computational board.
 
-The development process comprised theoretical analysis, LTspice and Multisim simulation, breadboard construction and testing, and final implementation on a printed circuit board. The Altium Designer project combines the computational circuits, gain controls, connectors, and mode-selection switches. A custom enclosure was also designed to support the hardware and provide access to its controls. The report explains the circuit principles, actual schematic values, power-supply calculations, PCB arrangement, enclosure geometry, and verification procedure. Retained simulation observations are distinguished from calculated expectations and hardware results. Numerical bench measurements were not included in the available project record; therefore, full-band accuracy is treated as a verification objective rather than an established measurement. The project provides practical experience in analog computation, circuit development, and the transition from simulation to physical implementation.
 \end{abstract}
 \clearpage
 
@@ -105,7 +104,7 @@ This project was carried out as part of the EN2091 Laboratory Practice and Proje
 
 \subsection{Objectives and Required Specifications}
 \begin{itemize}
-    \item Implement addition, subtraction, and multiplication, with integration and differentiation as additional functions~\cite{brief}.
+    \item Implement addition, subtraction, and multiplication, with integration and differentiation as additional functions.
     \item Target 1~Hz--10~kHz operation with dual-channel arithmetic inputs, bipolar signals, and adjustable controls.
     \item Provide a stable $\pm15$~V supply and verify the circuits through simulation, breadboard testing, and PCB implementation.
     \item Prepare manufacturing and enclosure files, and confirm approval for specification changes and regulator IC usage.
@@ -114,7 +113,7 @@ This project was carried out as part of the EN2091 Laboratory Practice and Proje
 \subsection{Development Approach}
 \begin{itemize}
     \item Develop the system through Multisim simulations, breadboard testing, and final PCB implementation.
-    \item Document the design using Altium files, power-supply records, and enclosure models~\cite{repository,designfiles}; use the senior report only as a structural reference.
+    \item Document the design using Altium files, power-supply records, and enclosure models; use the senior report only as a structural reference.
 \end{itemize}
 
 \section{System Architecture}
@@ -205,7 +204,7 @@ A_{2A}=-\frac{R_{10}}{R_9}=-\frac{47}{4700}=-0.01.
 \end{equation}
 
 
-C1--C4 couple these conditioned signals into the biased transistor circuit.470~\uF\ coupling component~\cite{panasonic}. These capacitors separate the op-amp output DC level from the transistor bias level. 
+C1--C4 couple these conditioned signals into the biased transistor circuit.470~\uF\ coupling component. These capacitors separate the op-amp output DC level from the transistor bias level. 
 For an illustrative effective bias resistance of 4.7~\kohm, the coupling corner is
 \begin{equation}
 f_c\approx\frac{1}{2\pi(4.7\times10^3)(470\times10^{-6})}
@@ -439,7 +438,7 @@ With $R_{in} = R_3 = 10\,\text{k}\Omega$, each switch position selects one feedb
         \item The maximum collector-emitter voltage is 45~V and the
         maximum DC collector current is 100~mA. The DC current gain
         $h_{FE}$ ranges from 420 to 800 under the datasheet test
-        conditions~\cite{bc550}.
+        conditions.
 
         \item Matching the transistors and keeping them at similar
         temperatures improves multiplier balance.
@@ -508,6 +507,12 @@ Input signals are supplied through four banana jacks. Two jacks provide the comm
     \caption{Final PCB Implementation}
     \label{fig:FinalPCB}
 \end{figure}
+
+The enclosure was designed to provide a compact, protective, and aesthetically pleasing housing for the analog computer, ensuring convenient access to the motherboard's ports and switches.
+
+It consists of two main parts: a bottom housing made of rigid PLA+ filament and a transparent top lid that allows visibility of the internal circuitry. The overall enclosure dimensions are approximately 146 mm × 117 mm × 57.9 mm, with a lid plan dimension of 147 mm × 118 mm.
+
+The design also considers ease of assembly, accessibility, and maintenance. The removable lid allows easy inspection and troubleshooting, while the openings provide convenient access to user interfaces. Overall, the enclosure combines functionality, protection, and aesthetics for indoor operation.
 \section{Software Simulation and Hardware Testing}
 \subsection{Software Simulation}
 \begin{minipage}[t]{0.48\textwidth}
